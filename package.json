@@ -20,6 +20,9 @@
     "url": "https://github.com/Nishu2202/B-L-SC-12WK-SC-MVP-Mokcup/issues"
   },
   "homepage": "https://github.com/Nishu2202/B-L-SC-12WK-SC-MVP-Mokcup#readme",
+  "overrides": {
+    "postcss": "^8.5.14"
+  },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-scroll-area": "^1.2.10",
