@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, TrendingUp, Lightbulb, Activity, Zap, BarChart2 } from "lucide-react";
+import { AlertTriangle, TrendingUp, Lightbulb, Activity, BarChart2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SkuData } from "@/lib/mock-data";
 
@@ -56,15 +56,6 @@ export default function KpiCards({ selectedSku, allSkus }: KpiCardsProps) {
       accent: "success",
       iconColor: "text-[var(--color-success)]",
       bgColor: "bg-[var(--color-success-light)]",
-    },
-    {
-      icon: Zap,
-      label: "Time to Detect",
-      value: "38 min",
-      sub: "From first anomaly signal",
-      accent: "info",
-      iconColor: "text-[var(--color-accent)]",
-      bgColor: "bg-[var(--color-accent-light)]",
     },
     {
       icon: BarChart2,
