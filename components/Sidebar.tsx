@@ -9,7 +9,6 @@ import {
   MessageSquareMore,
   Settings2,
   SlidersHorizontal,
-  ChevronRight,
 } from "lucide-react";
 
 export type NavView =
@@ -98,18 +97,7 @@ export default function Sidebar({ activeView, onNavigate }: SidebarProps) {
       </nav>
 
       {/* Footer */}
-      <div className="px-4 py-4 border-t border-slate-800">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center flex-shrink-0">
-            <span className="text-slate-300 text-[10px] font-semibold">VP</span>
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-slate-300 text-xs font-medium truncate">SC Planning</div>
-            <div className="text-slate-600 text-[10px] truncate">Global Operations</div>
-          </div>
-          <ChevronRight size={12} className="text-slate-600 flex-shrink-0" />
-        </div>
-      </div>
+      <div className="px-4 py-4 border-t border-slate-800" />
     </aside>
   );
 }
