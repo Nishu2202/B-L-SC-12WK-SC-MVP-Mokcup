@@ -86,13 +86,13 @@ export default function Sidebar({ activeView, onNavigate }: SidebarProps) {
                       isActive ? "text-[var(--color-primary)]" : "text-slate-500 group-hover:text-slate-300"
                     )}
                   />
-                  <span className="text-xs font-medium leading-tight flex-1">{item.label}</span>
+                  <span className="text-xs font-medium leading-tight min-w-0">{item.label}</span>
                   {isActive && (
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 ml-auto flex-shrink-0">
                       <div className="px-2 py-0.5 rounded-full bg-[var(--color-primary)] bg-opacity-20">
-                        <span className="text-[9px] font-semibold text-[var(--color-primary)]">ACTIVE</span>
+                        <span className="text-[9px] font-semibold text-[var(--color-primary)] whitespace-nowrap">ACTIVE</span>
                       </div>
-                      <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] flex-shrink-0" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]" />
                     </div>
                   )}
                 </button>
