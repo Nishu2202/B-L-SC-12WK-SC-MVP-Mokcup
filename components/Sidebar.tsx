@@ -30,11 +30,11 @@ interface NavItem {
 const navItems: NavItem[] = [
   { id: "overview", label: "Executive Overview", icon: LayoutDashboard },
   { id: "demand-planning", label: "Demand Planning Agent", icon: TrendingUp },
-  { id: "supply-planning", label: "Supply Planning", icon: Package },
+  { id: "supply-planning", label: "Supply Planning Agent", icon: Package },
   { id: "nrr-agent", label: "NRR Agent", icon: Repeat2 },
-  { id: "copilot", label: "Copilot", icon: MessageSquareMore },
-  { id: "policy-settings", label: "Policies & Engine Settings", icon: Settings2 },
+  { id: "copilot", label: "Copilot Agent", icon: MessageSquareMore },
   { id: "sc-parameters", label: "SC Parameters Drift", icon: SlidersHorizontal },
+  { id: "policy-settings", label: "Policies & Engine Settings", icon: Settings2 },
 ];
 
 interface SidebarProps {
