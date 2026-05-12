@@ -1,6 +1,7 @@
 "use client";
 
-import { Brain, TrendingUp, TrendingDown, Minus, RefreshCw, ChevronRight, AlertTriangle, CheckCircle, Info } from "lucide-react";
+import { useState } from "react";
+import { Brain, TrendingUp, TrendingDown, Minus, RefreshCw, ChevronRight, AlertTriangle, CheckCircle, Info, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import StatusChip from "./StatusChip";
 import type { SkuData } from "@/lib/mock-data";
@@ -11,6 +12,15 @@ interface RecommendationPanelProps {
   onSelectSku: (sku: SkuData) => void;
   view: "sku-list" | "details";
 }
+
+type FilterOption = "all" | "increase" | "decrease" | "hold";
+
+const filterOptions: { value: FilterOption; label: string }[] = [
+  { value: "all", label: "All Actions" },
+  { value: "increase", label: "Increase Forecast" },
+  { value: "decrease", label: "Reduce Forecast" },
+  { value: "hold", label: "Hold & Monitor" },
+];
 
 const actionIcon: Record<string, React.ElementType> = {
   increase: TrendingUp,
@@ -56,6 +66,19 @@ function SkuListPanel({
   selectedSku: SkuData | null;
   onSelectSku: (sku: SkuData) => void;
 }) {
+  const [filter, setFilter] = useState<FilterOption>("all");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const filteredSkus = allSkus.filter((sku) => {
+    if (filter === "all") return true;
+    if (filter === "increase") return sku.recommendedAction === "increase";
+    if (filter === "decrease") return sku.recommendedAction === "decrease";
+    if (filter === "hold") return sku.recommendedAction === "hold" || sku.recommendedAction === "rebalance";
+    return true;
+  });
+
+  const currentFilterLabel = filterOptions.find((o) => o.value === filter)?.label ?? "All Actions";
+
   return (
     <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-[var(--shadow-card)] flex flex-col h-full">
       <div className="px-5 py-4 border-b border-[var(--color-border)] flex-shrink-0">
@@ -63,9 +86,45 @@ function SkuListPanel({
         <p className="text-[11px] text-[var(--color-foreground-muted)] mt-0.5">
           Click any row to view AI recommendation
         </p>
+        {/* Filter dropdown */}
+        <div className="relative mt-3">
+          <button
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="w-full flex items-center justify-between gap-2 px-3 py-2 text-xs font-medium rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] hover:border-[var(--color-border-strong)] transition-colors"
+          >
+            <span className="text-[var(--color-foreground)]">{currentFilterLabel}</span>
+            <ChevronDown size={14} className={cn("text-[var(--color-foreground-muted)] transition-transform", dropdownOpen && "rotate-180")} />
+          </button>
+          {dropdownOpen && (
+            <div className="absolute z-10 top-full left-0 right-0 mt-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg shadow-lg overflow-hidden">
+              {filterOptions.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => {
+                    setFilter(option.value);
+                    setDropdownOpen(false);
+                  }}
+                  className={cn(
+                    "w-full text-left px-3 py-2.5 text-xs font-medium transition-colors",
+                    filter === option.value
+                      ? "bg-[var(--color-primary-light)] text-[var(--color-primary)]"
+                      : "text-[var(--color-foreground)] hover:bg-[var(--color-surface-2)]"
+                  )}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
       <div className="overflow-y-auto flex-1">
-        {allSkus.map((s) => {
+        {filteredSkus.length === 0 ? (
+          <div className="px-5 py-8 text-center">
+            <p className="text-xs text-[var(--color-foreground-muted)]">No SKUs match the selected filter</p>
+          </div>
+        ) : (
+          filteredSkus.map((s) => {
           const isSelected = selectedSku?.id === s.id;
           const devAbs = Math.abs(s.deviationPct);
           const deviationColor =
@@ -127,6 +186,7 @@ function SkuListPanel({
             </button>
           );
         })}
+        )}
       </div>
     </div>
   );
@@ -331,30 +391,7 @@ function DetailsPanel({ sku }: { sku: SkuData }) {
           </div>
         </div>
 
-        {/* Policies and Engine Settings */}
-        <div>
-          <div className="text-[11px] font-semibold text-[var(--color-foreground-muted)] uppercase tracking-wide mb-3">
-            Policies and Engine Settings
-          </div>
-          <div className="space-y-2.5">
-            {[
-              { label: "Replenishment Policy", value: "Min-Max (3k - 8k units)" },
-              { label: "Demand Sensing", value: "Enabled · Real-time" },
-              { label: "Seasonal Adjustment", value: "Active · Q2 ramp" },
-              { label: "Exception Trigger", value: "±15% variance threshold" },
-              { label: "Planning Horizon", value: "Rolling 90-day" },
-              { label: "Review Frequency", value: "Daily · Adaptive" },
-            ].map((m) => (
-              <div
-                key={m.label}
-                className="flex items-center justify-between px-4 py-2.5 rounded-lg bg-[var(--color-surface-2)] border border-[var(--color-border)]"
-              >
-                <div className="text-[11px] text-[var(--color-foreground-muted)]">{m.label}</div>
-                <div className="text-sm font-semibold text-[var(--color-foreground)]">{m.value}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+
       </div>
     </div>
   );
