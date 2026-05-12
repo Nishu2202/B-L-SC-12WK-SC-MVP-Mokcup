@@ -56,7 +56,7 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
 
   const data = viewMode === "aggregate" || !selectedSku ? aggregateData : selectedSku.history;
 
-  // Last 3 data points = spike zone (48h)
+  // Last 3 data points = spike zone (2 Days)
   const spikeDateStart = data.length >= 4 ? data[data.length - 4].date : null;
   const spikeDateEnd = data[data.length - 1].date;
 
@@ -116,7 +116,7 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-6 h-3 bg-amber-100 border border-amber-300 rounded" />
-            <span className="text-[11px] text-[var(--color-foreground-muted)]">Spike zone (48h)</span>
+            <span className="text-[11px] text-[var(--color-foreground-muted)]">Spike zone (2 Days)</span>
           </div>
           {viewMode !== "aggregate" && (
             <div className="flex items-center gap-1.5">

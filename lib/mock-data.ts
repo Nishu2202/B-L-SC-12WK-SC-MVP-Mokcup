@@ -91,13 +91,13 @@ export const skus: SkuData[] = [
     recommendedAction: "increase",
     status: "high-deviation",
     forecastEngine: "Blue Yonder + Planner",
-    rationale: "Spike detected in last 48h; accuracy below threshold. Planner review needed.",
+    rationale: "Spike detected in last 2 Days; accuracy below threshold. Planner review needed.",
     currentMonthForecast: 138000,
     currentMonthActual: 142500,
     suggestedAdjustmentPct: 8,
     confidenceScore: 87,
     explanation:
-      "Daily orders exceeded the expected consumption profile by 24% in the last 48 hours, driven by a surge in US East region. The spike distribution is front-loaded, suggesting a pull-forward from May. Recommend increasing current-month forecast by 8% and monitoring daily fill rate.",
+      "Daily orders exceeded the expected consumption profile by 24% in the last 2 Days, driven by a surge in US East region. The spike distribution is front-loaded, suggesting a pull-forward from May. Recommend increasing current-month forecast by 8% and monitoring daily fill rate.",
     history: genHistory(4800, 600, [2, 1, 0], 1.35, 15, 101),
   },
   {
@@ -278,7 +278,7 @@ export const copilotResponses: Record<string, CopilotMessage> = {
       "Two SKUs are recommended for upward forecast revision this month based on current order velocity and deviation analysis.",
     action: "Increase BT-90-US by +8% and BLU-MF-US by +6%.",
     bullets: [
-      "BT-90-US: +24.3% deviation, concentrated in last 48h, high confidence",
+      "BT-90-US: +24.3% deviation, concentrated in last 2 Days, high confidence",
       "BLU-MF-US: +18.7% deviation, seasonal alignment, moderate confidence",
       "PureVision2 HD (+7.8%) is within tolerance — hold and monitor",
     ],

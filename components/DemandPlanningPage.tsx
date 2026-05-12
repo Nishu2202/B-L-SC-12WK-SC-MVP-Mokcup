@@ -51,7 +51,7 @@ export default function DemandPlanningPage() {
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3 py-1">
               <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-              <span className="text-[11px] font-semibold text-amber-700">Spike detected · 48h</span>
+              <span className="text-[11px] font-semibold text-amber-700">Spike detected · 2 Days</span>
             </div>
             <div className="text-[11px] text-[var(--color-foreground-muted)] bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full px-3 py-1">
               Last refreshed: 2 min ago
