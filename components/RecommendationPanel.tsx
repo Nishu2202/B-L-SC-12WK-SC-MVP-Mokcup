@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Brain, TrendingUp, TrendingDown, Minus, RefreshCw, ChevronRight, AlertTriangle, CheckCircle, Info, ChevronDown } from "lucide-react";
+import { Brain, TrendingUp, TrendingDown, Minus, RefreshCw, ChevronRight, AlertTriangle, CheckCircle, Info, ChevronDown, ArrowUpCircle, ArrowDownCircle, PauseCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import StatusChip from "./StatusChip";
 import type { SkuData } from "@/lib/mock-data";
@@ -170,10 +170,17 @@ function SkuListPanel({
                   <span>·</span>
                   <span>{s.forecastAccuracy}% acc.</span>
                 </div>
-                <div className="mt-1.5">
-                  <StatusChip action={s.recommendedAction} size="sm" />
-                </div>
               </div>
+              {/* Action icon */}
+              {s.recommendedAction === "increase" && (
+                <ArrowUpCircle size={18} className="flex-shrink-0 text-[var(--color-danger)]" />
+              )}
+              {s.recommendedAction === "decrease" && (
+                <ArrowDownCircle size={18} className="flex-shrink-0 text-[var(--color-success)]" />
+              )}
+              {(s.recommendedAction === "hold" || s.recommendedAction === "rebalance") && (
+                <PauseCircle size={18} className="flex-shrink-0 text-[var(--color-warning)]" />
+              )}
               <ChevronRight
                 size={13}
                 className={cn(
