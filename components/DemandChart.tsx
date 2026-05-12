@@ -74,7 +74,7 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
       : `${selectedSku?.name ?? "SKU Detail"} — Expected vs Actual`;
 
   return (
-    <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-[var(--shadow-card)] overflow-hidden">
+    <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-[var(--shadow-card)] overflow-visible">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-3.5 border-b border-[var(--color-border)]">
         <div>
@@ -103,7 +103,7 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
       </div>
 
       {/* Chart */}
-      <div className="px-5 pt-4 pb-5">
+      <div className="px-5 pt-4 pb-5 overflow-visible">
         {/* Legend */}
         <div className="flex items-center gap-5 mb-3">
           <div className="flex items-center gap-1.5">
@@ -126,8 +126,8 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
           )}
         </div>
 
-        <ResponsiveContainer width="100%" height={280}>
-          <ComposedChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+        <ResponsiveContainer width="100%" height={320}>
+          <ComposedChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 40 }}>
             <defs>
               <linearGradient id="bandGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#0e7490" stopOpacity={0.15} />
@@ -138,9 +138,11 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
             <XAxis
               dataKey="date"
               tick={{ fontSize: 10, fill: "#94a3b8" }}
-              axisLine={false}
+              axisLine={{ stroke: "#e2e8f0" }}
               tickLine={false}
               interval={4}
+              dy={10}
+              height={40}
             />
             <YAxis
               tick={{ fontSize: 10, fill: "#94a3b8" }}
