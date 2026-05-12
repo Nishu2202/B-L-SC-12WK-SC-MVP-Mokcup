@@ -62,17 +62,24 @@ export default function DemandPlanningPage() {
         {/* KPI cards */}
         <KpiCards selectedSku={selectedSku} allSkus={skus} />
 
-        {/* Main 2-column layout */}
-        <div className="grid grid-cols-[1fr_300px] gap-4">
-          {/* Left: chart */}
-          <DemandChart selectedSku={selectedSku} aggregateData={aggregateData} />
-          {/* Right: recommendation + SKU list */}
+        {/* Top row: SKU list (left) + AI recommendation (right) */}
+        <div className="grid grid-cols-[280px_1fr] gap-4">
           <RecommendationPanel
             selectedSku={selectedSku}
             allSkus={skus}
             onSelectSku={handleSelectSku}
+            view="sku-list"
+          />
+          <RecommendationPanel
+            selectedSku={selectedSku}
+            allSkus={skus}
+            onSelectSku={handleSelectSku}
+            view="details"
           />
         </div>
+
+        {/* Chart full-width below */}
+        <DemandChart selectedSku={selectedSku} aggregateData={aggregateData} />
 
         {/* Segmentation matrix */}
         <SegmentationMatrix
