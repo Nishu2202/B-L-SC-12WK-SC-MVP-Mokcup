@@ -196,6 +196,7 @@ function SkuListPanel({
 function DetailsPanel({ sku }: { sku: SkuData }) {
   const ActionIcon = actionIcon[sku.recommendedAction];
   const colors = actionColors[sku.recommendedAction];
+  // Infer signal tags from the explanation keywords
   const deviationAbs = Math.abs(sku.deviationPct);
   const deviationColor =
     deviationAbs > 20
@@ -212,14 +213,6 @@ function DetailsPanel({ sku }: { sku: SkuData }) {
       : sku.recommendedAction === "hold"
       ? "Hold forecast — monitor for 48 hours"
       : "Rebalance distribution across weeks";
-
-  // Infer signal tags from the explanation keywords
-  const signals: { icon: React.ElementType; label: string; type: "warn" | "info" | "ok" }[] = [];
-  if (deviationAbs > 15) signals.push({ icon: AlertTriangle, label: `${deviationAbs.toFixed(1)}% deviation from expected profile`, type: "warn" });
-  if (sku.confidenceScore >= 80) signals.push({ icon: CheckCircle, label: `High model confidence at ${sku.confidenceScore}%`, type: "ok" });
-  if (sku.confidenceScore < 70) signals.push({ icon: AlertTriangle, label: `Low model confidence — ${sku.confidenceScore}%`, type: "warn" });
-  signals.push({ icon: Info, label: `Forecast engine: ${sku.forecastEngine}`, type: "info" });
-  signals.push({ icon: Info, label: `Segment: ${sku.segment} · Variability: ${sku.variabilityScore.toFixed(1)}`, type: "info" });
 
   return (
     <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-[var(--shadow-card)] h-full flex flex-col">
@@ -313,31 +306,6 @@ function DetailsPanel({ sku }: { sku: SkuData }) {
           </p>
         </div>
 
-        {/* Signal tags */}
-        <div>
-          <div className="text-[11px] font-semibold text-[var(--color-foreground-muted)] uppercase tracking-wide mb-2">
-            Key Signals
-          </div>
-          <div className="flex flex-col gap-2">
-            {signals.map((sig, i) => (
-              <div
-                key={i}
-                className={cn(
-                  "flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg text-xs",
-                  sig.type === "warn"
-                    ? "bg-amber-50 border border-amber-200 text-amber-800"
-                    : sig.type === "ok"
-                    ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
-                    : "bg-[var(--color-surface-2)] border border-[var(--color-border)] text-[var(--color-foreground-muted)]"
-                )}
-              >
-                <sig.icon size={12} className="flex-shrink-0" />
-                <span>{sig.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Secondary metrics */}
         <div className="grid grid-cols-3 gap-3 pt-1">
           {[
@@ -350,45 +318,6 @@ function DetailsPanel({ sku }: { sku: SkuData }) {
               <div className="text-[10px] text-[var(--color-foreground-muted)] mt-0.5">{m.label}</div>
             </div>
           ))}
-        </div>
-
-        {/* SC Parameters Drift */}
-        <div>
-          <div className="text-[11px] font-semibold text-[var(--color-foreground-muted)] uppercase tracking-wide mb-3">
-            SC Parameters Drift
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { label: "Lead Time Variance", value: "+3.2 days", status: "warn" },
-              { label: "Safety Stock Delta", value: "-8.5%", status: "ok" },
-              { label: "Reorder Point Drift", value: "+12%", status: "warn" },
-              { label: "Service Level Impact", value: "-1.1%", status: "warn" },
-            ].map((m) => (
-              <div
-                key={m.label}
-                className={cn(
-                  "rounded-lg px-4 py-3 border",
-                  m.status === "warn"
-                    ? "bg-amber-50 border-amber-200"
-                    : m.status === "ok"
-                    ? "bg-emerald-50 border-emerald-200"
-                    : "bg-[var(--color-surface-2)] border-[var(--color-border)]"
-                )}
-              >
-                <div className={cn(
-                  "text-sm font-bold",
-                  m.status === "warn"
-                    ? "text-amber-800"
-                    : m.status === "ok"
-                    ? "text-emerald-800"
-                    : "text-[var(--color-foreground)]"
-                )}>
-                  {m.value}
-                </div>
-                <div className="text-[10px] text-[var(--color-foreground-muted)] mt-0.5">{m.label}</div>
-              </div>
-            ))}
-          </div>
         </div>
 
 
