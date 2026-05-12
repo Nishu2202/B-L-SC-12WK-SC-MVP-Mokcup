@@ -185,7 +185,7 @@ function SkuListPanel({
               />
             </button>
           );
-        })}
+        })
         )}
       </div>
     </div>
