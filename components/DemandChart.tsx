@@ -74,7 +74,7 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
       : `${selectedSku?.name ?? "SKU Detail"} — Expected vs Actual`;
 
   return (
-    <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-[var(--shadow-card)] overflow-hidden">
+    <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-[var(--shadow-card)] overflow-visible">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-3.5 border-b border-[var(--color-border)]">
         <div>
@@ -103,7 +103,7 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
       </div>
 
       {/* Chart */}
-      <div className="px-5 pt-4 pb-5">
+      <div className="px-5 pt-4 pb-5 overflow-visible">
         {/* Legend */}
         <div className="flex items-center gap-5 mb-3">
           <div className="flex items-center gap-1.5">
