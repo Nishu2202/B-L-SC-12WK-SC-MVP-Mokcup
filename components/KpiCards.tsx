@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   TrendingUp,
   AlertTriangle,
@@ -71,11 +70,8 @@ export default function KpiCards() {
       {entries.map(([key, kpi], i) => {
         const cfg = STATUS_CONFIG[kpi.status];
         return (
-          <motion.div
+          <div
             key={key}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.06, duration: 0.3 }}
             className={cn(
               "bg-white rounded-xl border p-3.5 hover:shadow-sm transition-shadow cursor-default",
               cfg.border
@@ -102,7 +98,7 @@ export default function KpiCards() {
               {kpi.label}
             </p>
             <p className="text-[10px] text-[#94a3b8] leading-tight">{kpi.sub}</p>
-          </motion.div>
+          </div>
         );
       })}
     </div>

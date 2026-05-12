@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+
 import { AppStateProvider, useAppState } from "@/lib/app-state";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
@@ -11,34 +11,22 @@ import PlaceholderPage, { PLACEHOLDER_PAGES } from "./PlaceholderPage";
 function MainContent() {
   const { currentPage } = useAppState();
 
-  return (
-    <AnimatePresence mode="wait">
-      {currentPage === "demand-planning" ? (
-        <motion.div
-          key="demand-planning"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="flex-1 overflow-y-auto p-4 min-h-0"
-        >
-          <DemandPlanningPage />
-        </motion.div>
-      ) : (
-        <motion.div
-          key={currentPage}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="flex-1 overflow-y-auto p-4 min-h-0"
-        >
-          {PLACEHOLDER_PAGES[currentPage] ? (
-            <PlaceholderPage {...PLACEHOLDER_PAGES[currentPage]} />
-          ) : null}
-        </motion.div>
-      )}
-    </AnimatePresence>
+  return currentPage === "demand-planning" ? (
+    <div
+      key="demand-planning"
+      className="flex-1 overflow-y-auto p-4 min-h-0"
+    >
+      <DemandPlanningPage />
+    </div>
+  ) : (
+    <div
+      key={currentPage}
+      className="flex-1 overflow-y-auto p-4 min-h-0"
+    >
+      {PLACEHOLDER_PAGES[currentPage] ? (
+        <PlaceholderPage {...PLACEHOLDER_PAGES[currentPage]} />
+      ) : null}
+    </div>
   );
 }
 

@@ -14,7 +14,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { motion } from "framer-motion";
+
 import { useAppState, ChartView } from "@/lib/app-state";
 import { AGGREGATE_DAILY_DATA, DailyPoint } from "@/lib/mock-data";
 import { cn, formatNumber } from "@/lib/utils";
@@ -124,13 +124,7 @@ export default function DemandChart() {
       </div>
 
       {/* Chart */}
-      <motion.div
-        key={chartView + (selectedSKU?.id ?? "agg")}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-        className="h-52 w-full"
-      >
+      <div className="h-52 w-full">
         <ResponsiveContainer width="100%" height={208}>
           <AreaChart data={formattedData} margin={{ top: 8, right: 4, left: -10, bottom: 0 }}>
             <defs>
@@ -213,7 +207,7 @@ export default function DemandChart() {
             )}
           </AreaChart>
         </ResponsiveContainer>
-      </motion.div>
+      </div>
 
       {/* Legend */}
       <div className="flex items-center gap-4 pt-1 border-t border-[#f1f5f9]">
@@ -239,12 +233,7 @@ export default function DemandChart() {
 
       {/* SKU-level metrics row */}
       {isSkuView && selectedSKU && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          transition={{ duration: 0.25 }}
-          className="grid grid-cols-4 gap-2 pt-2 border-t border-[#f1f5f9]"
-        >
+        <div className="grid grid-cols-4 gap-2 pt-2 border-t border-[#f1f5f9]">
           {[
             { label: "Month Forecast", value: selectedSKU.currentMonthForecast.toLocaleString() },
             { label: "Month Actuals", value: selectedSKU.currentMonthActual.toLocaleString() },
@@ -260,7 +249,7 @@ export default function DemandChart() {
               <p className="text-[9px] text-[#94a3b8] mt-0.5">{m.label}</p>
             </div>
           ))}
-        </motion.div>
+        </div>
       )}
     </div>
   );

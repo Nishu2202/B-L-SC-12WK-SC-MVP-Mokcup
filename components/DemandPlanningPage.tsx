@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Zap } from "lucide-react";
 import KpiCards from "./KpiCards";
 import DemandChart from "./DemandChart";
@@ -11,12 +10,7 @@ export default function DemandPlanningPage() {
   return (
     <div className="flex flex-col gap-4 h-full overflow-y-auto">
       {/* Agent status banner */}
-      <motion.div
-        initial={{ opacity: 0, y: -4 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="flex items-center gap-3 px-4 py-2.5 bg-[#0e7490]/8 border border-[#0e7490]/20 rounded-xl text-[11px]"
-      >
+      <div className="flex items-center gap-3 px-4 py-2.5 bg-[#0e7490]/10 border border-[#0e7490]/20 rounded-xl text-[11px]">
         <Zap className="w-3.5 h-3.5 text-[#0e7490] flex-shrink-0" />
         <span className="text-[#0e7490] font-medium">
           Demand Planning Agent is active.
@@ -25,7 +19,7 @@ export default function DemandPlanningPage() {
           Last scan completed 4 minutes ago · 1 spike detected · 3 SKUs flagged for review.
         </span>
         <span className="ml-auto text-[10px] text-[#94a3b8]">May 12, 2025 · 09:41 UTC</span>
-      </motion.div>
+      </div>
 
       {/* KPI Summary Row */}
       <KpiCards />

@@ -1,6 +1,4 @@
 "use client";
-
-import { motion, AnimatePresence } from "framer-motion";
 import {
   TrendingUp,
   TrendingDown,
@@ -60,10 +58,8 @@ function ConfidenceBar({ value }: { value: number }) {
   return (
     <div className="flex items-center gap-2">
       <div className="flex-1 h-1.5 bg-[#f1f5f9] rounded-full overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${value}%` }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+        <div
+          style={{ width: `${value}%` }}
           className={cn(
             "h-full rounded-full",
             value >= 80 ? "bg-emerald-500" : value >= 65 ? "bg-amber-500" : "bg-red-500"
@@ -151,15 +147,10 @@ export default function RecommendationPanel() {
   return (
     <div className="flex flex-col gap-3 h-full overflow-y-auto">
       {/* Recommendation card */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={selectedSKU.id}
-          initial={{ opacity: 0, x: 8 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -8 }}
-          transition={{ duration: 0.25 }}
-          className="bg-white rounded-2xl border border-[#e2e8f0] p-4"
-        >
+      <div
+        key={selectedSKU.id}
+        className="bg-white rounded-2xl border border-[#e2e8f0] p-4"
+      >
           <div className="flex items-center gap-2 mb-3">
             <span className="text-[10px] font-semibold uppercase tracking-wide text-[#94a3b8]">
               AI Recommendation
@@ -261,8 +252,7 @@ export default function RecommendationPanel() {
           >
             {selectedSKU.nextAction}
           </div>
-        </motion.div>
-      </AnimatePresence>
+        </div>
 
       {/* Top SKU list */}
       <div className="bg-white rounded-2xl border border-[#e2e8f0] p-4">

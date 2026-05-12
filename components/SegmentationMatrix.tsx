@@ -1,6 +1,4 @@
 "use client";
-
-import { motion, AnimatePresence } from "framer-motion";
 import {
   TrendingUp,
   TrendingDown,
@@ -182,11 +180,8 @@ export default function SegmentationMatrix() {
               const actionIcon = ACTION_ICONS[sku.recommendedAction];
 
               return (
-                <motion.tr
+                <tr
                   key={sku.id}
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
                   onClick={() => selectSKU(sku)}
                   className={cn(
                     "cursor-pointer border-b border-[#f8fafc] transition-colors",
@@ -293,7 +288,7 @@ export default function SegmentationMatrix() {
                       )}
                     />
                   </td>
-                </motion.tr>
+                </tr>
               );
             })}
           </tbody>
@@ -301,16 +296,11 @@ export default function SegmentationMatrix() {
       </div>
 
       {/* Selected SKU expanded detail */}
-      <AnimatePresence>
-        {selectedSKU && (
-          <motion.div
-            key={selectedSKU.id}
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25 }}
-            className="border-t border-[#f1f5f9] overflow-hidden"
-          >
+      {selectedSKU && (
+        <div
+          key={selectedSKU.id}
+          className="border-t border-[#f1f5f9] overflow-hidden"
+        >
             <div className="px-5 py-4 bg-[#f0fdff]">
               <div className="flex items-start gap-6">
                 <div className="flex-1 min-w-0">
@@ -368,9 +358,8 @@ export default function SegmentationMatrix() {
                 </div>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </div>
   );
 }
