@@ -56,9 +56,17 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
 
   const data = viewMode === "aggregate" || !selectedSku ? aggregateData : selectedSku.history;
 
-  // Last 2 data points = spike zone
-  const spikeDateStart = data.length >= 3 ? data[data.length - 3].date : null;
+  // Last 3 data points = spike zone (48h)
+  const spikeDateStart = data.length >= 4 ? data[data.length - 4].date : null;
   const spikeDateEnd = data[data.length - 1].date;
+
+  // Calculate Y-axis domain to better show variation
+  const allValues = data.flatMap(d => [d.expected, d.actual, d.upper ?? 0].filter(v => v > 0));
+  const minVal = Math.min(...allValues);
+  const maxVal = Math.max(...allValues);
+  const padding = (maxVal - minVal) * 0.15;
+  const yMin = Math.max(0, Math.floor((minVal - padding) / 1000) * 1000);
+  const yMax = Math.ceil((maxVal + padding) / 1000) * 1000;
 
   const title =
     viewMode === "aggregate"
@@ -139,7 +147,8 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
               axisLine={false}
               tickLine={false}
               tickFormatter={formatK}
-              width={36}
+              width={40}
+              domain={[yMin, yMax]}
             />
             <Tooltip content={<CustomTooltip />} />
 
@@ -168,11 +177,12 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
               <ReferenceArea
                 x1={spikeDateStart}
                 x2={spikeDateEnd}
-                fill="#fef3c7"
-                fillOpacity={0.6}
-                stroke="#d97706"
-                strokeOpacity={0.4}
-                strokeWidth={1}
+                fill="#fef9c3"
+                fillOpacity={0.7}
+                stroke="#eab308"
+                strokeOpacity={0.6}
+                strokeWidth={1.5}
+                ifOverflow="extendDomain"
               />
             )}
 

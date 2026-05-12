@@ -32,13 +32,19 @@ export interface SkuData {
   history: DailyDataPoint[];
 }
 
-// Generate 30-day history
+// Generate 30-day history with deterministic seeded random for consistency
+function seededRandom(seed: number): number {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
 function genHistory(
   base: number,
   variance: number,
   spikeDays: number[],
   spikeMag: number,
-  trend: number = 0
+  trend: number = 0,
+  seed: number = 42
 ): DailyDataPoint[] {
   const points: DailyDataPoint[] = [];
   const today = new Date(2025, 3, 28); // April 28 2025
@@ -47,12 +53,21 @@ function genHistory(
     d.setDate(d.getDate() - i);
     const label = `${d.getMonth() + 1}/${d.getDate()}`;
     const dayTrend = base + trend * (29 - i);
-    const expected = Math.round(dayTrend + (Math.random() - 0.5) * variance * 0.3);
-    const isSpike = spikeDays.includes(i);
-    const actual =
-      i <= 1
-        ? Math.round(dayTrend * (isSpike ? spikeMag : 1) + (Math.random() - 0.5) * variance * 0.5)
-        : Math.round(dayTrend + (Math.random() - 0.5) * variance * 0.6);
+    const randExp = seededRandom(seed + i * 100);
+    const randAct = seededRandom(seed + i * 100 + 50);
+    const expected = Math.round(dayTrend + (randExp - 0.5) * variance * 0.2);
+    
+    // Apply spike to last 2 days (i <= 1) with clear magnitude
+    const isSpike = spikeDays.includes(i) && i <= 2;
+    let actual: number;
+    if (isSpike) {
+      // Make spike very visible - multiply base by spike magnitude
+      actual = Math.round(dayTrend * spikeMag + (randAct - 0.5) * variance * 0.1);
+    } else {
+      // Normal days: actual tracks expected with small variance
+      actual = Math.round(expected + (randAct - 0.5) * variance * 0.4);
+    }
+    
     const lower = Math.round(expected * 0.88);
     const upper = Math.round(expected * 1.12);
     const forecast = i === 0 ? Math.round(expected * 1.08) : undefined;
@@ -81,7 +96,7 @@ export const skus: SkuData[] = [
     confidenceScore: 87,
     explanation:
       "Daily orders exceeded the expected consumption profile by 24% in the last 48 hours, driven by a surge in US East region. The spike distribution is front-loaded, suggesting a pull-forward from May. Recommend increasing current-month forecast by 8% and monitoring daily fill rate.",
-    history: genHistory(4800, 700, [1, 0], 1.28, 20),
+    history: genHistory(4800, 600, [2, 1, 0], 1.35, 15, 101),
   },
   {
     id: "sku-002",
@@ -102,7 +117,7 @@ export const skus: SkuData[] = [
     confidenceScore: 72,
     explanation:
       "Actual orders are running 12% below the monthly forecast. Weekly orders trended down for 3 consecutive weeks. Distribution analysis shows no unusual patterns — this is a broad softening. Recommend reducing current-month forecast by 5% and reviewing safety stock.",
-    history: genHistory(3400, 900, [], 1.0, -15),
+    history: genHistory(3400, 700, [], 1.0, -12, 202),
   },
   {
     id: "sku-003",
@@ -123,7 +138,7 @@ export const skus: SkuData[] = [
     confidenceScore: 93,
     explanation:
       "Demand is tracking within ±5% of the expected profile. No anomalies detected in the last 7 days. Blue Yonder forecast is performing well for this SKU. Recommend holding current forecast and revisiting at next planning cycle.",
-    history: genHistory(2280, 300, [], 1.0, 5),
+    history: genHistory(2280, 250, [], 1.0, 4, 303),
   },
   {
     id: "sku-004",
@@ -144,7 +159,7 @@ export const skus: SkuData[] = [
     confidenceScore: 81,
     explanation:
       "Orders spiked 18.7% versus the expected profile over the last 3 days, concentrated in the Southwest distribution zone. Pattern is consistent with a seasonal uptick observed in prior years. Recommend increasing forecast by 6% and confirming supply coverage with regional DCs.",
-    history: genHistory(3850, 500, [1, 0], 1.2, 10),
+    history: genHistory(3850, 400, [2, 1, 0], 1.25, 8, 404),
   },
   {
     id: "sku-005",
@@ -165,7 +180,7 @@ export const skus: SkuData[] = [
     confidenceScore: 54,
     explanation:
       "This SKU shows the largest absolute deviation this month. Demand has been highly erratic, with large week-to-week swings that neither engine predicted well. Weekly distribution is misaligned. Recommend rebalancing the weekly distribution across the remaining weeks and engaging regional planner for manual override.",
-    history: genHistory(950, 600, [], 1.0, -30),
+    history: genHistory(950, 400, [], 1.0, -25, 505),
   },
   {
     id: "sku-006",
@@ -186,7 +201,7 @@ export const skus: SkuData[] = [
     confidenceScore: 76,
     explanation:
       "Demand is marginally above forecast at 7.8%. No structural shift detected. OPAL model is tracking well within tolerance. Recommend holding forecast and observing for the next 5 business days before triggering any adjustment.",
-    history: genHistory(1480, 400, [], 1.0, 0),
+    history: genHistory(1480, 300, [], 1.0, 0, 606),
   },
 ];
 
