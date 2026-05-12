@@ -103,9 +103,9 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
       </div>
 
       {/* Chart */}
-      <div className="px-5 pt-4 pb-5 overflow-visible">
+      <div className="px-5 pt-4 pb-2 overflow-visible">
         {/* Legend */}
-        <div className="flex items-center gap-5 mb-3">
+        <div className="flex items-center gap-5 mb-2">
           <div className="flex items-center gap-1.5">
             <div className="w-8 h-0.5 bg-[#0e7490] rounded" />
             <span className="text-[11px] text-[var(--color-foreground-muted)]">Expected profile</span>
@@ -126,8 +126,8 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
           )}
         </div>
 
-        <ResponsiveContainer width="100%" height={300}>
-          <ComposedChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 28 }}>
+        <ResponsiveContainer width="100%" height={280}>
+          <ComposedChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 22 }}>
             <defs>
               <linearGradient id="bandGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#0e7490" stopOpacity={0.15} />
