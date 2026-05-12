@@ -298,18 +298,18 @@ function SkuListPanel({
   return (
     <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-[var(--shadow-card)] flex flex-col h-full">
       <div className="px-5 py-4 border-b border-[var(--color-border)] flex-shrink-0">
-        <h4 className="text-sm font-semibold text-[var(--color-foreground)]">Top Flagged SKUs</h4>
-        <p className="text-[11px] text-[var(--color-foreground-muted)] mt-0.5">
+        <h4 className="text-base font-bold text-[var(--color-foreground)]">Top Flagged SKUs</h4>
+        <p className="text-xs text-[var(--color-foreground-muted)] mt-0.5">
           Click any row to view AI recommendation
         </p>
         {/* Filter dropdown */}
         <div className="relative mt-3">
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="w-full flex items-center justify-between gap-2 px-3 py-2 text-xs font-medium rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] hover:border-[var(--color-border-strong)] transition-colors"
+            className="w-full flex items-center justify-between gap-2 px-3 py-2.5 text-sm font-medium rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] hover:border-[var(--color-border-strong)] transition-colors"
           >
             <span className="text-[var(--color-foreground)]">{currentFilterLabel}</span>
-            <ChevronDown size={14} className={cn("text-[var(--color-foreground-muted)] transition-transform", dropdownOpen && "rotate-180")} />
+            <ChevronDown size={15} className={cn("text-[var(--color-foreground-muted)] transition-transform", dropdownOpen && "rotate-180")} />
           </button>
           {dropdownOpen && (
             <div className="absolute z-10 top-full left-0 right-0 mt-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg shadow-lg overflow-hidden">
@@ -321,7 +321,7 @@ function SkuListPanel({
                     setDropdownOpen(false);
                   }}
                   className={cn(
-                    "w-full text-left px-3 py-2.5 text-xs font-medium transition-colors",
+                    "w-full text-left px-3 py-3 text-sm font-medium transition-colors",
                     filter === option.value
                       ? "bg-[var(--color-primary-light)] text-[var(--color-primary)]"
                       : "text-[var(--color-foreground)] hover:bg-[var(--color-surface-2)]"
@@ -375,11 +375,11 @@ function SkuListPanel({
                 )}
               />
               <div className="flex-1 min-w-0">
-                <div className="text-xs font-semibold text-[var(--color-foreground)] truncate leading-tight">
+                <div className="text-sm font-semibold text-[var(--color-foreground)] truncate leading-tight">
                   {s.name}
                 </div>
-                <div className="text-[10px] text-[var(--color-foreground-muted)] mt-1 flex items-center gap-1.5">
-                  <span className={cn("font-semibold", deviationColor)}>
+                <div className="text-xs text-[var(--color-foreground-muted)] mt-1 flex items-center gap-1.5">
+                  <span className={cn("font-bold", deviationColor)}>
                     {s.deviationPct > 0 ? "+" : ""}
                     {s.deviationPct.toFixed(1)}%
                   </span>
@@ -475,8 +475,8 @@ function DetailsPanel({ sku }: { sku: SkuData }) {
             <Brain size={14} className="text-[var(--color-primary)]" />
           </div>
           <div>
-            <span className="text-sm font-semibold text-[var(--color-foreground)]">AI Recommendation</span>
-            <p className="text-[11px] text-[var(--color-foreground-muted)] mt-0.5">{sku.code} · Updated 2 min ago</p>
+            <span className="text-base font-bold text-[var(--color-foreground)]">AI Recommendation</span>
+            <p className="text-xs text-[var(--color-foreground-muted)] mt-0.5">{sku.code} · Updated 2 min ago</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -484,16 +484,16 @@ function DetailsPanel({ sku }: { sku: SkuData }) {
           {/* Action buttons */}
           <button
             onClick={() => setIsOverrideModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[var(--color-primary)] bg-[var(--color-primary-light)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[var(--color-primary)] bg-[var(--color-primary-light)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-colors"
           >
-            <Edit3 size={12} />
+            <Edit3 size={13} />
             Planner&apos;s Override
           </button>
           <button
             disabled
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-400 bg-slate-100 rounded-lg cursor-not-allowed"
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-400 bg-slate-100 rounded-lg cursor-not-allowed"
           >
-            <Lock size={12} />
+            <Lock size={13} />
             Commit to System
           </button>
         </div>
@@ -502,8 +502,8 @@ function DetailsPanel({ sku }: { sku: SkuData }) {
       <div className="px-6 py-5 flex-1 overflow-y-auto space-y-5">
         {/* SKU identity */}
         <div>
-          <h3 className="text-base font-bold text-[var(--color-foreground)] leading-tight">{sku.name}</h3>
-          <p className="text-[11px] text-[var(--color-foreground-muted)] mt-1">
+          <h3 className="text-lg font-bold text-[var(--color-foreground)] leading-tight">{sku.name}</h3>
+          <p className="text-xs text-[var(--color-foreground-muted)] mt-1">
             {sku.code} &nbsp;·&nbsp; {sku.segment} &nbsp;·&nbsp; {sku.forecastEngine}
           </p>
         </div>
@@ -547,9 +547,9 @@ function DetailsPanel({ sku }: { sku: SkuData }) {
               key={m.label}
               className="bg-[var(--color-surface-2)] rounded-xl p-4"
             >
-              <div className={cn("text-xl font-bold leading-tight", m.color)}>{m.value}</div>
-              <div className="text-[11px] font-medium text-[var(--color-foreground)] mt-1">{m.label}</div>
-              <div className="text-[10px] text-[var(--color-foreground-muted)] mt-0.5">{m.sub}</div>
+              <div className={cn("text-2xl font-bold leading-tight", m.color)}>{m.value}</div>
+              <div className="text-xs font-semibold text-[var(--color-foreground)] mt-1.5">{m.label}</div>
+              <div className="text-xs text-[var(--color-foreground-muted)] mt-0.5">{m.sub}</div>
             </div>
           ))}
         </div>
@@ -557,19 +557,19 @@ function DetailsPanel({ sku }: { sku: SkuData }) {
         {/* Action banner */}
         <div className={cn("flex items-center gap-3 rounded-xl px-5 py-4 border", colors.bg, colors.border)}>
           <div className={cn("p-2 rounded-lg bg-white/60")}>
-            <ActionIcon size={16} className={colors.icon} />
+            <ActionIcon size={18} className={colors.icon} />
           </div>
           <div>
-            <div className={cn("text-xs font-bold uppercase tracking-wide mb-0.5", colors.text)}>
+            <div className={cn("text-xs font-bold uppercase tracking-wide mb-1", colors.text)}>
               Recommended Action
             </div>
-            <div className="text-sm font-semibold text-[var(--color-foreground)]">{actionLabel}</div>
+            <div className="text-base font-bold text-[var(--color-foreground)]">{actionLabel}</div>
           </div>
         </div>
 
         {/* Explanation */}
         <div>
-          <div className="text-[11px] font-semibold text-[var(--color-foreground-muted)] uppercase tracking-wide mb-2">
+          <div className="text-xs font-bold text-[var(--color-foreground-muted)] uppercase tracking-wide mb-2">
             Agent Rationale
           </div>
           <p className="text-sm text-[var(--color-foreground)] leading-relaxed">
@@ -585,8 +585,8 @@ function DetailsPanel({ sku }: { sku: SkuData }) {
             { label: "Variability Score", value: sku.variabilityScore.toFixed(2) },
           ].map((m) => (
             <div key={m.label} className="bg-[var(--color-surface-2)] rounded-lg px-4 py-3">
-              <div className="text-sm font-bold text-[var(--color-foreground)]">{m.value}</div>
-              <div className="text-[10px] text-[var(--color-foreground-muted)] mt-0.5">{m.label}</div>
+              <div className="text-base font-bold text-[var(--color-foreground)]">{m.value}</div>
+              <div className="text-xs text-[var(--color-foreground-muted)] mt-1">{m.label}</div>
             </div>
           ))}
         </div>
