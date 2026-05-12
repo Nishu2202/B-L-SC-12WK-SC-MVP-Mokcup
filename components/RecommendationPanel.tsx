@@ -291,6 +291,70 @@ function DetailsPanel({ sku }: { sku: SkuData }) {
             </div>
           ))}
         </div>
+
+        {/* SC Parameters Drift */}
+        <div>
+          <div className="text-[11px] font-semibold text-[var(--color-foreground-muted)] uppercase tracking-wide mb-3">
+            SC Parameters Drift
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { label: "Lead Time Variance", value: "+3.2 days", status: "warn" },
+              { label: "Safety Stock Delta", value: "-8.5%", status: "ok" },
+              { label: "Reorder Point Drift", value: "+12%", status: "warn" },
+              { label: "Service Level Impact", value: "-1.1%", status: "warn" },
+            ].map((m) => (
+              <div
+                key={m.label}
+                className={cn(
+                  "rounded-lg px-4 py-3 border",
+                  m.status === "warn"
+                    ? "bg-amber-50 border-amber-200"
+                    : m.status === "ok"
+                    ? "bg-emerald-50 border-emerald-200"
+                    : "bg-[var(--color-surface-2)] border-[var(--color-border)]"
+                )}
+              >
+                <div className={cn(
+                  "text-sm font-bold",
+                  m.status === "warn"
+                    ? "text-amber-800"
+                    : m.status === "ok"
+                    ? "text-emerald-800"
+                    : "text-[var(--color-foreground)]"
+                )}>
+                  {m.value}
+                </div>
+                <div className="text-[10px] text-[var(--color-foreground-muted)] mt-0.5">{m.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Policies and Engine Settings */}
+        <div>
+          <div className="text-[11px] font-semibold text-[var(--color-foreground-muted)] uppercase tracking-wide mb-3">
+            Policies and Engine Settings
+          </div>
+          <div className="space-y-2.5">
+            {[
+              { label: "Replenishment Policy", value: "Min-Max (3k - 8k units)" },
+              { label: "Demand Sensing", value: "Enabled · Real-time" },
+              { label: "Seasonal Adjustment", value: "Active · Q2 ramp" },
+              { label: "Exception Trigger", value: "±15% variance threshold" },
+              { label: "Planning Horizon", value: "Rolling 90-day" },
+              { label: "Review Frequency", value: "Daily · Adaptive" },
+            ].map((m) => (
+              <div
+                key={m.label}
+                className="flex items-center justify-between px-4 py-2.5 rounded-lg bg-[var(--color-surface-2)] border border-[var(--color-border)]"
+              >
+                <div className="text-[11px] text-[var(--color-foreground-muted)]">{m.label}</div>
+                <div className="text-sm font-semibold text-[var(--color-foreground)]">{m.value}</div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
