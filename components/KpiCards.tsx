@@ -75,20 +75,20 @@ export default function KpiCards({ selectedSku, allSkus }: KpiCardsProps) {
         return (
           <div
             key={card.label}
-            className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-3.5 shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] transition-shadow"
+            className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-4 shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] transition-shadow"
           >
-            <div className="flex items-start justify-between mb-2">
-              <div className={cn("p-1.5 rounded-lg", card.bgColor)}>
-                <Icon size={13} className={card.iconColor} />
+            <div className="flex items-start justify-between mb-3">
+              <div className={cn("p-2 rounded-lg", card.bgColor)}>
+                <Icon size={15} className={card.iconColor} />
               </div>
             </div>
-            <div className="text-lg font-bold text-[var(--color-foreground)] leading-tight">
+            <div className="text-2xl font-bold text-[var(--color-foreground)] leading-tight">
               {card.value}
             </div>
-            <div className="text-[11px] font-medium text-[var(--color-foreground)] mt-0.5 leading-tight">
+            <div className="text-sm font-semibold text-[var(--color-foreground)] mt-1 leading-snug">
               {card.label}
             </div>
-            <div className="text-[10px] text-[var(--color-foreground-muted)] mt-0.5 leading-tight">
+            <div className="text-xs text-[var(--color-foreground-muted)] mt-0.5 leading-snug">
               {card.sub}
             </div>
           </div>

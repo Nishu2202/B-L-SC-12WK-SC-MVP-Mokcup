@@ -76,10 +76,10 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
   return (
     <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-[var(--shadow-card)] overflow-visible">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-3.5 border-b border-[var(--color-border)]">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--color-border)]">
         <div>
-          <h3 className="text-sm font-semibold text-[var(--color-foreground)]">{title}</h3>
-          <p className="text-[11px] text-[var(--color-foreground-muted)] mt-0.5">
+          <h3 className="text-base font-bold text-[var(--color-foreground)]">{title}</h3>
+          <p className="text-xs text-[var(--color-foreground-muted)] mt-0.5">
             Daily order volume · 30-day rolling window
           </p>
         </div>
@@ -90,7 +90,7 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
               key={m.id}
               onClick={() => setViewMode(m.id)}
               className={cn(
-                "px-2.5 py-1 rounded-md text-[11px] font-medium transition-all",
+                "px-3 py-1.5 rounded-md text-xs font-semibold transition-all",
                 viewMode === m.id
                   ? "bg-white text-[var(--color-foreground)] shadow-sm"
                   : "text-[var(--color-foreground-muted)] hover:text-[var(--color-foreground)]"

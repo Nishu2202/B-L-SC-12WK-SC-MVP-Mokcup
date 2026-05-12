@@ -50,19 +50,19 @@ export default function DemandPlanningPage() {
         {/* Section label */}
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-sm font-semibold text-[var(--color-foreground)]">
+            <h2 className="text-base font-bold text-[var(--color-foreground)]">
               Demand Planning Agent
             </h2>
-            <p className="text-[11px] text-[var(--color-foreground-muted)] mt-0.5">
+            <p className="text-xs text-[var(--color-foreground-muted)] mt-0.5">
               Planning cycle: April 2025 · Region: Global · Category: All Lenses
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3 py-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-              <span className="text-[11px] font-semibold text-amber-700">Spike detected · 2 Days</span>
+            <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3 py-1.5">
+              <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+              <span className="text-xs font-semibold text-amber-700">Spike detected · 2 Days</span>
             </div>
-            <div className="text-[11px] text-[var(--color-foreground-muted)] bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full px-3 py-1">
+            <div className="text-xs text-[var(--color-foreground-muted)] bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full px-3 py-1.5">
               Last refreshed: 2 min ago
             </div>
           </div>
