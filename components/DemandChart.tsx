@@ -138,9 +138,11 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
             <XAxis
               dataKey="date"
               tick={{ fontSize: 10, fill: "#94a3b8" }}
-              axisLine={false}
+              axisLine={{ stroke: "#e2e8f0" }}
               tickLine={false}
               interval={4}
+              dy={10}
+              height={40}
             />
             <YAxis
               tick={{ fontSize: 10, fill: "#94a3b8" }}
