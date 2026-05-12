@@ -108,20 +108,20 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
         <div className="flex items-center gap-5 mb-2">
           <div className="flex items-center gap-1.5">
             <div className="w-8 h-0.5 bg-[#0e7490] rounded" />
-            <span className="text-[11px] text-[var(--color-foreground-muted)]">Expected profile</span>
+            <span className="text-xs text-[var(--color-foreground-muted)] font-medium">Expected profile</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-8 h-0.5 bg-[#f97316] rounded" />
-            <span className="text-[11px] text-[var(--color-foreground-muted)]">Actual orders</span>
+            <span className="text-xs text-[var(--color-foreground-muted)] font-medium">Actual orders</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-6 h-3 bg-amber-100 border border-amber-300 rounded" />
-            <span className="text-[11px] text-[var(--color-foreground-muted)]">Spike zone (2 Days)</span>
+            <span className="text-xs text-[var(--color-foreground-muted)] font-medium">Spike zone (2 Days)</span>
           </div>
           {viewMode !== "aggregate" && (
             <div className="flex items-center gap-1.5">
               <div className="w-8 h-0.5 bg-[var(--color-primary)] rounded border-dashed border border-[var(--color-primary)] bg-transparent" />
-              <span className="text-[11px] text-[var(--color-foreground-muted)]">Conf. band</span>
+              <span className="text-xs text-[var(--color-foreground-muted)] font-medium">Conf. band</span>
             </div>
           )}
         </div>
@@ -137,7 +137,7 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
             <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
             <XAxis
               dataKey="date"
-              tick={{ fontSize: 10, fill: "#94a3b8" }}
+              tick={{ fontSize: 12, fill: "#64748b", fontWeight: 500 }}
               axisLine={{ stroke: "#e2e8f0" }}
               tickLine={false}
               interval={4}
@@ -145,11 +145,11 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
               height={40}
             />
             <YAxis
-              tick={{ fontSize: 10, fill: "#94a3b8" }}
+              tick={{ fontSize: 12, fill: "#64748b", fontWeight: 500 }}
               axisLine={false}
               tickLine={false}
               tickFormatter={formatK}
-              width={40}
+              width={48}
               domain={[yMin, yMax]}
             />
             <Tooltip content={<CustomTooltip />} />
