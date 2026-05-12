@@ -20,6 +20,7 @@ export interface SkuData {
   forecastAccuracy: number;
   volume: number;
   variability: "Low" | "Medium" | "High";
+  variabilityScore: number;
   recommendedAction: RecommendedAction;
   status: SkuStatus;
   forecastEngine: ForecastEngine;
@@ -32,13 +33,19 @@ export interface SkuData {
   history: DailyDataPoint[];
 }
 
-// Generate 30-day history
+// Generate 30-day history with deterministic seeded random for consistency
+function seededRandom(seed: number): number {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
 function genHistory(
   base: number,
   variance: number,
   spikeDays: number[],
   spikeMag: number,
-  trend: number = 0
+  trend: number = 0,
+  seed: number = 42
 ): DailyDataPoint[] {
   const points: DailyDataPoint[] = [];
   const today = new Date(2025, 3, 28); // April 28 2025
@@ -47,12 +54,21 @@ function genHistory(
     d.setDate(d.getDate() - i);
     const label = `${d.getMonth() + 1}/${d.getDate()}`;
     const dayTrend = base + trend * (29 - i);
-    const expected = Math.round(dayTrend + (Math.random() - 0.5) * variance * 0.3);
-    const isSpike = spikeDays.includes(i);
-    const actual =
-      i <= 1
-        ? Math.round(dayTrend * (isSpike ? spikeMag : 1) + (Math.random() - 0.5) * variance * 0.5)
-        : Math.round(dayTrend + (Math.random() - 0.5) * variance * 0.6);
+    const randExp = seededRandom(seed + i * 100);
+    const randAct = seededRandom(seed + i * 100 + 50);
+    const expected = Math.round(dayTrend + (randExp - 0.5) * variance * 0.2);
+    
+    // Apply spike to last 2 days (i <= 1) with clear magnitude
+    const isSpike = spikeDays.includes(i) && i <= 2;
+    let actual: number;
+    if (isSpike) {
+      // Make spike very visible - multiply base by spike magnitude
+      actual = Math.round(dayTrend * spikeMag + (randAct - 0.5) * variance * 0.1);
+    } else {
+      // Normal days: actual tracks expected with small variance
+      actual = Math.round(expected + (randAct - 0.5) * variance * 0.4);
+    }
+    
     const lower = Math.round(expected * 0.88);
     const upper = Math.round(expected * 1.12);
     const forecast = i === 0 ? Math.round(expected * 1.08) : undefined;
@@ -71,122 +87,128 @@ export const skus: SkuData[] = [
     forecastAccuracy: 73,
     volume: 142500,
     variability: "Low",
+    variabilityScore: 0.42,
     recommendedAction: "increase",
     status: "high-deviation",
     forecastEngine: "Blue Yonder + Planner",
-    rationale: "Spike detected in last 48h; accuracy below threshold. Planner review needed.",
+    rationale: "Spike detected in last 2 Days; accuracy below threshold. Planner review needed.",
     currentMonthForecast: 138000,
     currentMonthActual: 142500,
     suggestedAdjustmentPct: 8,
     confidenceScore: 87,
     explanation:
-      "Daily orders exceeded the expected consumption profile by 24% in the last 48 hours, driven by a surge in US East region. The spike distribution is front-loaded, suggesting a pull-forward from May. Recommend increasing current-month forecast by 8% and monitoring daily fill rate.",
-    history: genHistory(4800, 700, [1, 0], 1.28, 20),
-  },
-  {
-    id: "sku-002",
-    name: "Ultra for Astigmatism",
-    code: "ULT-TORIC-NA",
-    segment: "High Volume / High Var",
-    deviationPct: -12.1,
-    forecastAccuracy: 61,
-    volume: 98200,
-    variability: "High",
-    recommendedAction: "decrease",
-    status: "warning",
-    forecastEngine: "OPAL + Planner",
-    rationale: "Demand softer than expected. High variability warrants planner input.",
-    currentMonthForecast: 102000,
-    currentMonthActual: 89700,
-    suggestedAdjustmentPct: -5,
-    confidenceScore: 72,
-    explanation:
-      "Actual orders are running 12% below the monthly forecast. Weekly orders trended down for 3 consecutive weeks. Distribution analysis shows no unusual patterns — this is a broad softening. Recommend reducing current-month forecast by 5% and reviewing safety stock.",
-    history: genHistory(3400, 900, [], 1.0, -15),
-  },
-  {
-    id: "sku-003",
-    name: "SofLens Daily Disposable",
-    code: "SLD-30-EMEA",
-    segment: "Mid Volume / Low Var",
-    deviationPct: 3.2,
-    forecastAccuracy: 84,
-    volume: 67400,
-    variability: "Low",
-    recommendedAction: "hold",
-    status: "on-track",
-    forecastEngine: "Blue Yonder",
-    rationale: "High accuracy, low variability. Blue Yonder forecast is reliable.",
-    currentMonthForecast: 68000,
-    currentMonthActual: 67400,
-    suggestedAdjustmentPct: 0,
-    confidenceScore: 93,
-    explanation:
-      "Demand is tracking within ±5% of the expected profile. No anomalies detected in the last 7 days. Blue Yonder forecast is performing well for this SKU. Recommend holding current forecast and revisiting at next planning cycle.",
-    history: genHistory(2280, 300, [], 1.0, 5),
-  },
-  {
-    id: "sku-004",
-    name: "Bausch + Lomb ULTRA",
-    code: "BLU-MF-US",
-    segment: "High Volume / Low Var",
-    deviationPct: 18.7,
-    forecastAccuracy: 78,
-    volume: 115300,
-    variability: "Low",
-    recommendedAction: "increase",
-    status: "warning",
-    forecastEngine: "Blue Yonder",
-    rationale: "Moderate spike; accuracy still acceptable. Blue Yonder forecast sufficient.",
-    currentMonthForecast: 109000,
-    currentMonthActual: 115300,
-    suggestedAdjustmentPct: 6,
-    confidenceScore: 81,
-    explanation:
-      "Orders spiked 18.7% versus the expected profile over the last 3 days, concentrated in the Southwest distribution zone. Pattern is consistent with a seasonal uptick observed in prior years. Recommend increasing forecast by 6% and confirming supply coverage with regional DCs.",
-    history: genHistory(3850, 500, [1, 0], 1.2, 10),
-  },
-  {
-    id: "sku-005",
-    name: "ReNu MultiPlus 360mL",
-    code: "RNU-360-LA",
-    segment: "Low Volume / High Var",
-    deviationPct: -31.5,
-    forecastAccuracy: 44,
-    volume: 22800,
-    variability: "High",
-    recommendedAction: "rebalance",
-    status: "needs-review",
-    forecastEngine: "OPAL + Planner",
-    rationale: "Low accuracy, high variability. Significant mismatch. Manual review required.",
-    currentMonthForecast: 28000,
-    currentMonthActual: 19200,
-    suggestedAdjustmentPct: -12,
-    confidenceScore: 54,
-    explanation:
-      "This SKU shows the largest absolute deviation this month. Demand has been highly erratic, with large week-to-week swings that neither engine predicted well. Weekly distribution is misaligned. Recommend rebalancing the weekly distribution across the remaining weeks and engaging regional planner for manual override.",
-    history: genHistory(950, 600, [], 1.0, -30),
+      "Daily orders exceeded the expected consumption profile by 24% in the last 2 Days, driven by a surge in US East region. The spike distribution is front-loaded, suggesting a pull-forward from May. Recommend increasing current-month forecast by 8% and monitoring daily fill rate.",
+    history: genHistory(4800, 600, [2, 1, 0], 1.35, 15, 101),
   },
   {
     id: "sku-006",
-    name: "PureVision2 HD",
-    code: "PV2-US-WEST",
-    segment: "Mid Volume / Medium Var",
-    deviationPct: 7.8,
+    name: "PureVision Multi-Focal 30pk",
+    code: "PV-MF-30-US",
+    segment: "Specialty / Low Var",
+    deviationPct: 4.3,
+    forecastAccuracy: 91,
+    volume: 42300,
+    variability: "Low",
+    variabilityScore: 0.38,
+    recommendedAction: "hold",
+    status: "on-track",
+    forecastEngine: "Blue Yonder",
+    rationale: "Premium segment stable. Specialty demand consistent.",
+    currentMonthForecast: 40500,
+    currentMonthActual: 42300,
+    suggestedAdjustmentPct: 0,
+    confidenceScore: 93,
+    explanation:
+      "Premium specialty segment performing stably with high forecast accuracy. Orders tracking within expected range. Maintain current forecast and supply strategy.",
+    history: genHistory(1480, 300, [], 1.0, 0, 606),
+  },
+  {
+    id: "sku-003",
+    name: "Purevision 2 HD 30pk",
+    code: "PV-HD-30-US",
+    segment: "Low Volume / Low Var",
+    deviationPct: 2.1,
+    forecastAccuracy: 94,
+    volume: 56700,
+    variability: "Low",
+    variabilityScore: 0.31,
+    recommendedAction: "hold",
+    status: "on-track",
+    forecastEngine: "Blue Yonder",
+    rationale: "Steady performer. Close to expected profile with excellent accuracy.",
+    currentMonthForecast: 55500,
+    currentMonthActual: 56700,
+    suggestedAdjustmentPct: 0,
+    confidenceScore: 96,
+    explanation:
+      "Orders tracking precisely to expected profile. Excellent forecast accuracy with minimal variance. No action required — continue current forecast and replenishment strategy.",
+    history: genHistory(2280, 250, [], 1.0, 4, 303),
+  },
+  {
+    id: "sku-004",
+    name: "Frequency 55 Toric 6pk",
+    code: "FQ-TOR-6-US",
+    segment: "High Volume / Med Var",
+    deviationPct: 18.7,
     forecastAccuracy: 71,
-    volume: 44100,
+    volume: 112350,
     variability: "Medium",
+    variabilityScore: 0.74,
+    recommendedAction: "increase",
+    status: "warning",
+    forecastEngine: "OPAL + Planner",
+    rationale: "Recent spike in Toric segment. OPAL needs manual review for seasonal shift.",
+    currentMonthForecast: 94500,
+    currentMonthActual: 112350,
+    suggestedAdjustmentPct: 5,
+    confidenceScore: 76,
+    explanation:
+      "Toric orders rising ahead of seasonal promotion ramp. Historical accuracy suggests pull-forward activity. Increase forecast by 5% and monitor promotional impact.",
+    history: genHistory(3850, 400, [2, 1, 0], 1.25, 8, 404),
+  },
+  {
+    id: "sku-005",
+    name: "SofLens Daily 90pk",
+    code: "SL-DAILY-90-US",
+    segment: "Declining / Low Var",
+    deviationPct: -15.6,
+    forecastAccuracy: 88,
+    volume: 34200,
+    variability: "Low",
+    variabilityScore: 0.29,
+    recommendedAction: "decrease",
+    status: "on-track",
+    forecastEngine: "Blue Yonder",
+    rationale: "Continued decline in daily disposables segment. Model updated.",
+    currentMonthForecast: 40500,
+    currentMonthActual: 34200,
+    suggestedAdjustmentPct: -12,
+    confidenceScore: 89,
+    explanation:
+      "Orders declining as expected in legacy daily segment. Market shift to Biotrue continues. Decrease forecast by 12% to align with structural decline and reduce excess inventory.",
+    history: genHistory(950, 400, [], 1.0, -25, 505),
+  },
+  {
+    id: "sku-002",
+    name: "Lacelle 55 6-pk",
+    code: "LC-55-6-US",
+    segment: "Medium Volume / Med Var",
+    deviationPct: -8.2,
+    forecastAccuracy: 82,
+    volume: 89400,
+    variability: "Medium",
+    variabilityScore: 0.68,
     recommendedAction: "hold",
     status: "on-track",
     forecastEngine: "OPAL",
-    rationale: "Moderate accuracy. OPAL handles variability well for this profile.",
-    currentMonthForecast: 43000,
-    currentMonthActual: 44100,
-    suggestedAdjustmentPct: 2,
-    confidenceScore: 76,
+    rationale: "Performance within expected bounds. Slight underperformance vs. expected, but within 1-sigma.",
+    currentMonthForecast: 97400,
+    currentMonthActual: 89400,
+    suggestedAdjustmentPct: 0,
+    confidenceScore: 91,
     explanation:
-      "Demand is marginally above forecast at 7.8%. No structural shift detected. OPAL model is tracking well within tolerance. Recommend holding forecast and observing for the next 5 business days before triggering any adjustment.",
-    history: genHistory(1480, 400, [], 1.0, 0),
+      "Orders tracking slightly below expected profile, but within normal variance bands. No anomalies detected. Maintain current forecast and continue standard monitoring.",
+    history: genHistory(3400, 700, [], 1.0, -12, 202),
   },
 ];
 
@@ -256,7 +278,7 @@ export const copilotResponses: Record<string, CopilotMessage> = {
       "Two SKUs are recommended for upward forecast revision this month based on current order velocity and deviation analysis.",
     action: "Increase BT-90-US by +8% and BLU-MF-US by +6%.",
     bullets: [
-      "BT-90-US: +24.3% deviation, concentrated in last 48h, high confidence",
+      "BT-90-US: +24.3% deviation, concentrated in last 2 Days, high confidence",
       "BLU-MF-US: +18.7% deviation, seasonal alignment, moderate confidence",
       "PureVision2 HD (+7.8%) is within tolerance — hold and monitor",
     ],

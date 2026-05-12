@@ -57,9 +57,12 @@ export default function Header({ title, subtitle }: HeaderProps) {
         {/* User profile */}
         <div className="flex items-center gap-2 border border-[var(--color-border)] rounded-lg px-2.5 py-1.5 cursor-pointer hover:border-[var(--color-border-strong)] transition-colors">
           <div className="w-6 h-6 rounded-full bg-[var(--color-primary)] flex items-center justify-center">
-            <span className="text-white text-[10px] font-semibold">JM</span>
+            <span className="text-white text-[10px] font-semibold">BF</span>
           </div>
-          <span className="text-xs font-medium text-[var(--color-foreground)]">J. Morrison</span>
+          <div className="flex flex-col">
+            <span className="text-xs font-medium text-[var(--color-foreground)] leading-tight">Breda Furlong</span>
+            <span className="text-[10px] text-[var(--color-foreground-muted)] leading-tight">VP Supply Chain</span>
+          </div>
           <ChevronDown size={11} className="text-[var(--color-foreground-subtle)]" />
         </div>
       </div>

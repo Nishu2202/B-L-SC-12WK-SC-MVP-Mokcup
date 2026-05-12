@@ -56,9 +56,17 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
 
   const data = viewMode === "aggregate" || !selectedSku ? aggregateData : selectedSku.history;
 
-  // Last 2 data points = spike zone
-  const spikeDateStart = data.length >= 3 ? data[data.length - 3].date : null;
+  // Last 3 data points = spike zone (2 Days)
+  const spikeDateStart = data.length >= 4 ? data[data.length - 4].date : null;
   const spikeDateEnd = data[data.length - 1].date;
+
+  // Calculate Y-axis domain to better show variation
+  const allValues = data.flatMap(d => [d.expected, d.actual, d.upper ?? 0].filter(v => v > 0));
+  const minVal = Math.min(...allValues);
+  const maxVal = Math.max(...allValues);
+  const padding = (maxVal - minVal) * 0.15;
+  const yMin = Math.max(0, Math.floor((minVal - padding) / 1000) * 1000);
+  const yMax = Math.ceil((maxVal + padding) / 1000) * 1000;
 
   const title =
     viewMode === "aggregate"
@@ -108,7 +116,7 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-6 h-3 bg-amber-100 border border-amber-300 rounded" />
-            <span className="text-[11px] text-[var(--color-foreground-muted)]">Spike zone (48h)</span>
+            <span className="text-[11px] text-[var(--color-foreground-muted)]">Spike zone (2 Days)</span>
           </div>
           {viewMode !== "aggregate" && (
             <div className="flex items-center gap-1.5">
@@ -118,7 +126,7 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
           )}
         </div>
 
-        <ResponsiveContainer width="100%" height={230}>
+        <ResponsiveContainer width="100%" height={280}>
           <ComposedChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="bandGradient" x1="0" y1="0" x2="0" y2="1">
@@ -139,7 +147,8 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
               axisLine={false}
               tickLine={false}
               tickFormatter={formatK}
-              width={36}
+              width={40}
+              domain={[yMin, yMax]}
             />
             <Tooltip content={<CustomTooltip />} />
 
@@ -168,11 +177,12 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
               <ReferenceArea
                 x1={spikeDateStart}
                 x2={spikeDateEnd}
-                fill="#fef3c7"
-                fillOpacity={0.6}
-                stroke="#d97706"
-                strokeOpacity={0.4}
-                strokeWidth={1}
+                fill="#fef9c3"
+                fillOpacity={0.7}
+                stroke="#eab308"
+                strokeOpacity={0.6}
+                strokeWidth={1.5}
+                ifOverflow="extendDomain"
               />
             )}
 

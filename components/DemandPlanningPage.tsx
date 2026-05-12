@@ -51,7 +51,7 @@ export default function DemandPlanningPage() {
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3 py-1">
               <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-              <span className="text-[11px] font-semibold text-amber-700">Spike detected · 48h</span>
+              <span className="text-[11px] font-semibold text-amber-700">Spike detected · 2 Days</span>
             </div>
             <div className="text-[11px] text-[var(--color-foreground-muted)] bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full px-3 py-1">
               Last refreshed: 2 min ago
@@ -62,16 +62,26 @@ export default function DemandPlanningPage() {
         {/* KPI cards */}
         <KpiCards selectedSku={selectedSku} allSkus={skus} />
 
-        {/* Main 2-column layout */}
-        <div className="grid grid-cols-[1fr_300px] gap-4">
-          {/* Left: chart */}
-          <DemandChart selectedSku={selectedSku} aggregateData={aggregateData} />
-          {/* Right: recommendation + SKU list */}
+        {/* Main layout: SKU list (left) + Graph & AI recommendation (right) */}
+        <div className="grid grid-cols-[280px_1fr] gap-4">
+          {/* Left: SKU list */}
           <RecommendationPanel
             selectedSku={selectedSku}
             allSkus={skus}
             onSelectSku={handleSelectSku}
+            view="sku-list"
           />
+          
+          {/* Right: Graph on top, AI recommendation below */}
+          <div className="flex flex-col gap-4">
+            <DemandChart selectedSku={selectedSku} aggregateData={aggregateData} />
+            <RecommendationPanel
+              selectedSku={selectedSku}
+              allSkus={skus}
+              onSelectSku={handleSelectSku}
+              view="details"
+            />
+          </div>
         </div>
 
         {/* Segmentation matrix */}
