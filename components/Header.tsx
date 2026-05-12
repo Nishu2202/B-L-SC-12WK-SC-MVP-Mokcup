@@ -136,11 +136,11 @@ export default function Header() {
       {/* User */}
       <div className="flex items-center gap-2 pl-2 border-l border-[#e2e8f0]">
         <div className="w-7 h-7 rounded-full bg-[#0e7490] flex items-center justify-center text-white text-xs font-semibold">
-          SM
+          FB
         </div>
         <div className="hidden lg:block">
-          <p className="text-xs font-medium text-[#0f172a] leading-tight">S. Mitchell</p>
-          <p className="text-[10px] text-[#94a3b8] leading-tight">VP Supply Chain</p>
+          <p className="text-xs font-medium text-[#0f172a] leading-tight">Furlong, Breda E</p>
+          <p className="text-[10px] text-[#94a3b8] leading-tight">VP Global Supply Chain</p>
         </div>
       </div>
     </header>
