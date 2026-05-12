@@ -126,8 +126,8 @@ export default function DemandChart({ selectedSku, aggregateData }: DemandChartP
           )}
         </div>
 
-        <ResponsiveContainer width="100%" height={320}>
-          <ComposedChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 40 }}>
+        <ResponsiveContainer width="100%" height={300}>
+          <ComposedChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 28 }}>
             <defs>
               <linearGradient id="bandGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#0e7490" stopOpacity={0.15} />
