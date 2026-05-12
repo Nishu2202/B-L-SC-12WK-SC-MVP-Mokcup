@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import KpiCards from "./KpiCards";
 import DemandChart from "./DemandChart";
 import RecommendationPanel from "./RecommendationPanel";
-import SegmentationMatrix from "./SegmentationMatrix";
 import { skus, getAggregateHistory } from "@/lib/mock-data";
 import type { SkuData } from "@/lib/mock-data";
 
@@ -69,11 +68,8 @@ export default function DemandPlanningPage() {
           </div>
         </div>
 
-        {/* KPI cards */}
-        <KpiCards selectedSku={selectedSku} allSkus={skus} />
-
-        {/* Sheet tabs */}
-        <div className="flex items-center gap-1 border-b border-[var(--color-border)]">
+        {/* Sheet tabs - prominent style */}
+        <div className="flex items-center gap-2">
           {sheetTabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeSheet === tab.id;
@@ -82,21 +78,14 @@ export default function DemandPlanningPage() {
                 key={tab.id}
                 onClick={() => setActiveSheet(tab.id)}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2.5 text-xs font-medium transition-colors relative",
+                  "flex items-center gap-2.5 px-5 py-3 text-sm font-semibold rounded-xl transition-all",
                   isActive
-                    ? "text-[var(--color-primary)]"
-                    : "text-[var(--color-foreground-muted)] hover:text-[var(--color-foreground)]"
+                    ? "bg-[var(--color-primary)] text-white shadow-lg shadow-[var(--color-primary)]/25"
+                    : "bg-[var(--color-surface)] text-[var(--color-foreground-muted)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
                 )}
               >
-                <Icon size={14} />
+                <Icon size={16} />
                 <span>{tab.label}</span>
-                {isActive && (
-                  <motion.div
-                    layoutId="activeSheetTab"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--color-primary)]"
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                  />
-                )}
               </button>
             );
           })}
@@ -108,8 +97,11 @@ export default function DemandPlanningPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2 }}
-            className="space-y-4"
+            className="space-y-5"
           >
+            {/* KPI cards - only on Sheet 1 */}
+            <KpiCards selectedSku={selectedSku} allSkus={skus} />
+
             {/* Main layout: SKU list (left) + Graph & AI recommendation (right) */}
             <div className="grid grid-cols-[280px_1fr] gap-4">
               {/* Left: SKU list */}
@@ -140,12 +132,17 @@ export default function DemandPlanningPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2 }}
+            className="flex flex-col items-center justify-center py-20"
           >
-            <SegmentationMatrix
-              skus={skus}
-              selectedSku={selectedSku}
-              onSelectSku={handleSelectSku}
-            />
+            <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-12 text-center max-w-md">
+              <Grid3X3 size={48} className="mx-auto text-[var(--color-foreground-muted)] mb-4" />
+              <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-2">
+                SKU Segmentation & Forecast Strategy
+              </h3>
+              <p className="text-sm text-[var(--color-foreground-muted)]">
+                Metrics and visualizations for this sheet will be configured soon.
+              </p>
+            </div>
           </motion.div>
         )}
       </div>
