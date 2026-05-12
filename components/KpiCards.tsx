@@ -69,7 +69,7 @@ export default function KpiCards({ selectedSku, allSkus }: KpiCardsProps) {
   ];
 
   return (
-    <div className="grid grid-cols-6 gap-3">
+    <div className="grid grid-cols-5 gap-3">
       {cards.map((card) => {
         const Icon = card.icon;
         return (
