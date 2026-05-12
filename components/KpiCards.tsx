@@ -23,7 +23,7 @@ export default function KpiCards({ selectedSku, allSkus }: KpiCardsProps) {
       icon: AlertTriangle,
       label: "Demand Spike Detected",
       value: spikeDetected ? "Active" : "None",
-      sub: "Last 24–48 hours",
+      sub: "Last 2 Days",
       accent: spikeDetected ? "danger" : "success",
       iconColor: spikeDetected ? "text-[var(--color-danger)]" : "text-[var(--color-success)]",
       bgColor: spikeDetected ? "bg-[var(--color-danger-light)]" : "bg-[var(--color-success-light)]",

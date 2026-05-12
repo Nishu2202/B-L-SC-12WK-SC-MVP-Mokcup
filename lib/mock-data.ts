@@ -261,7 +261,7 @@ export const copilotResponses: Record<string, CopilotMessage> = {
     id: "r1",
     role: "assistant",
     content:
-      "The demand spike was driven by Biotrue ONEday 90pk (BT-90-US) in the US East region, where orders exceeded the expected daily consumption profile by 24.3% over the last 48 hours.",
+      "The demand spike was driven by Biotrue ONEday 90pk (BT-90-US) in the US East region, where orders exceeded the expected daily consumption profile by 24.3% over the last 2 Days.",
     action: "Increase BT-90-US current-month forecast by 8% and confirm DC inventory.",
     bullets: [
       "Pull-forward from May appears likely based on order clustering pattern",

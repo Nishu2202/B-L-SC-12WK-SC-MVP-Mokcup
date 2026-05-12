@@ -211,7 +211,7 @@ function DetailsPanel({ sku }: { sku: SkuData }) {
       : sku.recommendedAction === "decrease"
       ? `Decrease current month forecast by ${Math.abs(sku.suggestedAdjustmentPct)}%`
       : sku.recommendedAction === "hold"
-      ? "Hold forecast — monitor for 48 hours"
+      ? "Hold forecast — monitor for 2 Days"
       : "Rebalance distribution across weeks";
 
   return (
