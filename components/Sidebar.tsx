@@ -9,7 +9,6 @@ import {
   MessageSquareMore,
   Settings2,
   SlidersHorizontal,
-  ChevronRight,
 } from "lucide-react";
 
 export type NavView =
@@ -31,11 +30,11 @@ interface NavItem {
 const navItems: NavItem[] = [
   { id: "overview", label: "Executive Overview", icon: LayoutDashboard },
   { id: "demand-planning", label: "Demand Planning Agent", icon: TrendingUp },
-  { id: "supply-planning", label: "Supply Planning", icon: Package },
+  { id: "supply-planning", label: "Supply Planning Agent", icon: Package },
   { id: "nrr-agent", label: "NRR Agent", icon: Repeat2 },
-  { id: "copilot", label: "Copilot", icon: MessageSquareMore },
-  { id: "policy-settings", label: "Policies & Engine Settings", icon: Settings2 },
+  { id: "copilot", label: "Copilot Agent", icon: MessageSquareMore },
   { id: "sc-parameters", label: "SC Parameters Drift", icon: SlidersHorizontal },
+  { id: "policy-settings", label: "Policies & Engine Settings", icon: Settings2 },
 ];
 
 interface SidebarProps {
@@ -88,12 +87,7 @@ export default function Sidebar({ activeView, onNavigate }: SidebarProps) {
                   />
                   <span className="text-xs font-medium leading-tight min-w-0">{item.label}</span>
                   {isActive && (
-                    <div className="flex items-center gap-1.5 ml-auto flex-shrink-0">
-                      <div className="px-2 py-0.5 rounded-full bg-[var(--color-primary)] bg-opacity-20">
-                        <span className="text-[9px] font-semibold text-[var(--color-primary)] whitespace-nowrap">ACTIVE</span>
-                      </div>
-                      <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]" />
-                    </div>
+                    <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] ml-auto flex-shrink-0" />
                   )}
                 </button>
               </li>
@@ -103,18 +97,7 @@ export default function Sidebar({ activeView, onNavigate }: SidebarProps) {
       </nav>
 
       {/* Footer */}
-      <div className="px-4 py-4 border-t border-slate-800">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center flex-shrink-0">
-            <span className="text-slate-300 text-[10px] font-semibold">VP</span>
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-slate-300 text-xs font-medium truncate">SC Planning</div>
-            <div className="text-slate-600 text-[10px] truncate">Global Operations</div>
-          </div>
-          <ChevronRight size={12} className="text-slate-600 flex-shrink-0" />
-        </div>
-      </div>
+      <div className="px-4 py-4 border-t border-slate-800" />
     </aside>
   );
 }

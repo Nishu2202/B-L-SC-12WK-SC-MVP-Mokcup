@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Brain, TrendingUp, TrendingDown, Minus, RefreshCw, ChevronRight, AlertTriangle, CheckCircle, Info, ChevronDown } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Brain, TrendingUp, TrendingDown, Minus, RefreshCw, ChevronRight, AlertTriangle, CheckCircle, Info, ChevronDown, ArrowUpCircle, ArrowDownCircle, PauseCircle, X, Edit3, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import StatusChip from "./StatusChip";
 import type { SkuData } from "@/lib/mock-data";
@@ -11,6 +11,39 @@ interface RecommendationPanelProps {
   allSkus: SkuData[];
   onSelectSku: (sku: SkuData) => void;
   view: "sku-list" | "details";
+}
+
+// Time horizons for the override modal
+const timeHorizons = ["Week 1", "Week 2", "Week 3", "Week 4", "Month Total"];
+
+// Generate mock historical/forecast data for a SKU
+function generateForecastData(sku: SkuData) {
+  const baseForecast = Math.round(sku.currentMonthForecast / 4);
+  const aiAdjustment = sku.suggestedAdjustmentPct / 100;
+  
+  return {
+    currentForecast: [
+      baseForecast,
+      Math.round(baseForecast * 1.05),
+      Math.round(baseForecast * 0.98),
+      Math.round(baseForecast * 1.02),
+      sku.currentMonthForecast,
+    ],
+    aiSuggestion: [
+      Math.round(baseForecast * (1 + aiAdjustment)),
+      Math.round(baseForecast * 1.05 * (1 + aiAdjustment)),
+      Math.round(baseForecast * 0.98 * (1 + aiAdjustment)),
+      Math.round(baseForecast * 1.02 * (1 + aiAdjustment)),
+      Math.round(sku.currentMonthForecast * (1 + aiAdjustment)),
+    ],
+    historicalSales: [
+      Math.round(baseForecast * 0.95),
+      Math.round(baseForecast * 1.08),
+      Math.round(baseForecast * 0.92),
+      Math.round(baseForecast * 1.01),
+      Math.round(sku.currentMonthForecast * 0.97),
+    ],
+  };
 }
 
 type FilterOption = "all" | "increase" | "decrease" | "hold";
@@ -55,6 +88,189 @@ const actionColors: Record<string, { bg: string; border: string; text: string; i
     icon: "text-orange-600",
   },
 };
+
+// ─── Planner Override Modal ─────────────────────────────────────────────────
+function PlannerOverrideModal({
+  sku,
+  isOpen,
+  onClose,
+  onSave,
+}: {
+  sku: SkuData;
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (newTotal: number) => void;
+}) {
+  const forecastData = generateForecastData(sku);
+  const [overrideValues, setOverrideValues] = useState<number[]>([...forecastData.aiSuggestion]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setOverrideValues([...forecastData.aiSuggestion]);
+    }
+  }, [isOpen, sku.id]);
+
+  const handleInputChange = (index: number, value: string) => {
+    const numValue = parseInt(value.replace(/,/g, ""), 10) || 0;
+    const newValues = [...overrideValues];
+    newValues[index] = numValue;
+    // Update total (last column) when weekly values change
+    if (index < 4) {
+      newValues[4] = newValues[0] + newValues[1] + newValues[2] + newValues[3];
+    }
+    setOverrideValues(newValues);
+  };
+
+  const handleSave = () => {
+    onSave(overrideValues[4]);
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      
+      {/* Modal */}
+      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-4 overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)]">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-[var(--color-primary-light)]">
+              <Edit3 size={18} className="text-[var(--color-primary)]" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-[var(--color-foreground)]">Planner&apos;s Override</h2>
+              <p className="text-xs text-[var(--color-foreground-muted)]">{sku.name} · {sku.code}</p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg hover:bg-[var(--color-surface-2)] transition-colors"
+          >
+            <X size={20} className="text-[var(--color-foreground-muted)]" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="px-6 py-5">
+          {/* Table */}
+          <div className="border border-[var(--color-border)] rounded-xl overflow-hidden">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-[var(--color-surface-2)]">
+                  <th className="text-left text-xs font-semibold text-[var(--color-foreground)] px-4 py-3 w-48">
+                    Metric
+                  </th>
+                  {timeHorizons.map((h) => (
+                    <th key={h} className="text-right text-xs font-semibold text-[var(--color-foreground)] px-4 py-3">
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {/* Historical Sales */}
+                <tr className="border-t border-[var(--color-border)]">
+                  <td className="px-4 py-3">
+                    <div className="text-xs font-medium text-[var(--color-foreground-muted)]">Historical Sales (Last Month)</div>
+                  </td>
+                  {forecastData.historicalSales.map((val, i) => (
+                    <td key={i} className="text-right px-4 py-3">
+                      <span className="text-sm font-medium text-slate-500">{val.toLocaleString()}</span>
+                    </td>
+                  ))}
+                </tr>
+                {/* Current Forecast */}
+                <tr className="border-t border-[var(--color-border)] bg-slate-50">
+                  <td className="px-4 py-3">
+                    <div className="text-xs font-semibold text-[var(--color-foreground)]">Current Forecast</div>
+                  </td>
+                  {forecastData.currentForecast.map((val, i) => (
+                    <td key={i} className="text-right px-4 py-3">
+                      <span className="text-sm font-bold text-[var(--color-foreground)]">{val.toLocaleString()}</span>
+                    </td>
+                  ))}
+                </tr>
+                {/* AI Suggestion */}
+                <tr className="border-t border-[var(--color-border)] bg-blue-50">
+                  <td className="px-4 py-3">
+                    <div className="text-xs font-semibold text-blue-700">AI Suggestion</div>
+                  </td>
+                  {forecastData.aiSuggestion.map((val, i) => (
+                    <td key={i} className="text-right px-4 py-3">
+                      <span className="text-sm font-bold text-blue-700">{val.toLocaleString()}</span>
+                    </td>
+                  ))}
+                </tr>
+                {/* Planner's Override - Editable */}
+                <tr className="border-t-2 border-[var(--color-primary)] bg-teal-50">
+                  <td className="px-4 py-3">
+                    <div className="text-xs font-bold text-[var(--color-primary)]">Planner&apos;s Override</div>
+                  </td>
+                  {overrideValues.map((val, i) => (
+                    <td key={i} className="text-right px-4 py-2">
+                      <input
+                        type="text"
+                        value={val.toLocaleString()}
+                        onChange={(e) => handleInputChange(i, e.target.value)}
+                        disabled={i === 4} // Total is auto-calculated
+                        className={cn(
+                          "w-full text-right text-sm font-bold px-2 py-1.5 rounded-lg border transition-colors",
+                          i === 4
+                            ? "bg-teal-100 border-teal-300 text-[var(--color-primary)] cursor-not-allowed"
+                            : "bg-white border-[var(--color-border)] text-[var(--color-foreground)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 outline-none"
+                        )}
+                      />
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Variance summary */}
+          <div className="mt-4 flex items-center justify-between px-4 py-3 bg-[var(--color-surface-2)] rounded-lg">
+            <span className="text-xs text-[var(--color-foreground-muted)]">
+              Variance from Current Forecast:
+            </span>
+            <span className={cn(
+              "text-sm font-bold",
+              overrideValues[4] > forecastData.currentForecast[4]
+                ? "text-[var(--color-success)]"
+                : overrideValues[4] < forecastData.currentForecast[4]
+                ? "text-[var(--color-danger)]"
+                : "text-[var(--color-foreground)]"
+            )}>
+              {overrideValues[4] > forecastData.currentForecast[4] ? "+" : ""}
+              {(overrideValues[4] - forecastData.currentForecast[4]).toLocaleString()} units
+              ({overrideValues[4] > forecastData.currentForecast[4] ? "+" : ""}
+              {(((overrideValues[4] - forecastData.currentForecast[4]) / forecastData.currentForecast[4]) * 100).toFixed(1)}%)
+            </span>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-[var(--color-border)] bg-[var(--color-surface-2)]">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-sm font-medium text-[var(--color-foreground-muted)] hover:text-[var(--color-foreground)] transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            className="px-5 py-2 text-sm font-semibold text-white bg-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors shadow-lg shadow-[var(--color-primary)]/25"
+          >
+            Save Override
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ─── SKU List Panel ──────────────────────────────────────────────────────────
 function SkuListPanel({
@@ -170,10 +386,17 @@ function SkuListPanel({
                   <span>·</span>
                   <span>{s.forecastAccuracy}% acc.</span>
                 </div>
-                <div className="mt-1.5">
-                  <StatusChip action={s.recommendedAction} size="sm" />
-                </div>
               </div>
+              {/* Action icon */}
+              {s.recommendedAction === "increase" && (
+                <ArrowUpCircle size={18} className="flex-shrink-0 text-[var(--color-danger)]" />
+              )}
+              {s.recommendedAction === "decrease" && (
+                <ArrowDownCircle size={18} className="flex-shrink-0 text-[var(--color-success)]" />
+              )}
+              {(s.recommendedAction === "hold" || s.recommendedAction === "rebalance") && (
+                <PauseCircle size={18} className="flex-shrink-0 text-[var(--color-warning)]" />
+              )}
               <ChevronRight
                 size={13}
                 className={cn(
@@ -194,6 +417,9 @@ function SkuListPanel({
 
 // ─── Details / AI Recommendation Panel ──────────────────────────────────────
 function DetailsPanel({ sku }: { sku: SkuData }) {
+  const [isOverrideModalOpen, setIsOverrideModalOpen] = useState(false);
+  const [overrideAdjustment, setOverrideAdjustment] = useState<number | null>(null);
+
   const ActionIcon = actionIcon[sku.recommendedAction];
   const colors = actionColors[sku.recommendedAction];
   // Infer signal tags from the explanation keywords
@@ -205,17 +431,43 @@ function DetailsPanel({ sku }: { sku: SkuData }) {
       ? "text-[var(--color-warning)]"
       : "text-[var(--color-success)]";
 
+  // Calculate displayed adjustment - use override if available
+  const displayedAdjustment = overrideAdjustment !== null
+    ? Math.round(((overrideAdjustment - sku.currentMonthForecast) / sku.currentMonthForecast) * 100)
+    : sku.suggestedAdjustmentPct;
+
+  const displayedAdjustmentValue = overrideAdjustment !== null
+    ? overrideAdjustment
+    : Math.round(sku.currentMonthForecast * (1 + sku.suggestedAdjustmentPct / 100));
+
   const actionLabel =
     sku.recommendedAction === "increase"
-      ? `Increase current month forecast by ${sku.suggestedAdjustmentPct}%`
+      ? `Increase current month forecast by ${Math.abs(displayedAdjustment)}%`
       : sku.recommendedAction === "decrease"
-      ? `Decrease current month forecast by ${Math.abs(sku.suggestedAdjustmentPct)}%`
+      ? `Decrease current month forecast by ${Math.abs(displayedAdjustment)}%`
       : sku.recommendedAction === "hold"
-      ? "Hold forecast — monitor for 48 hours"
+      ? "Hold forecast — monitor for 2 Days"
       : "Rebalance distribution across weeks";
+
+  const handleOverrideSave = (newTotal: number) => {
+    setOverrideAdjustment(newTotal);
+  };
+
+  // Reset override when SKU changes
+  useEffect(() => {
+    setOverrideAdjustment(null);
+  }, [sku.id]);
 
   return (
     <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-[var(--shadow-card)] h-full flex flex-col">
+      {/* Planner Override Modal */}
+      <PlannerOverrideModal
+        sku={sku}
+        isOpen={isOverrideModalOpen}
+        onClose={() => setIsOverrideModalOpen(false)}
+        onSave={handleOverrideSave}
+      />
+
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)] flex-shrink-0">
         <div className="flex items-center gap-2.5">
@@ -227,7 +479,24 @@ function DetailsPanel({ sku }: { sku: SkuData }) {
             <p className="text-[11px] text-[var(--color-foreground-muted)] mt-0.5">{sku.code} · Updated 2 min ago</p>
           </div>
         </div>
-        <StatusChip status={sku.status} />
+        <div className="flex items-center gap-2">
+          <StatusChip status={sku.status} />
+          {/* Action buttons */}
+          <button
+            onClick={() => setIsOverrideModalOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[var(--color-primary)] bg-[var(--color-primary-light)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-colors"
+          >
+            <Edit3 size={12} />
+            Planner&apos;s Override
+          </button>
+          <button
+            disabled
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-400 bg-slate-100 rounded-lg cursor-not-allowed"
+          >
+            <Lock size={12} />
+            Commit to System
+          </button>
+        </div>
       </div>
 
       <div className="px-6 py-5 flex-1 overflow-y-auto space-y-5">
@@ -261,12 +530,14 @@ function DetailsPanel({ sku }: { sku: SkuData }) {
               color: "text-[var(--color-foreground)]",
             },
             {
-              label: "Suggested Adj.",
-              value: `${sku.suggestedAdjustmentPct > 0 ? "+" : ""}${sku.suggestedAdjustmentPct}%`,
-              sub: "To forecast",
+              label: overrideAdjustment !== null ? "Planner Adj." : "Suggested Adj.",
+              value: `${(displayedAdjustmentValue / 1000).toFixed(1)}k`,
+              sub: overrideAdjustment !== null 
+                ? `Override (${displayedAdjustment > 0 ? "+" : ""}${displayedAdjustment}%)`
+                : `AI suggestion (${displayedAdjustment > 0 ? "+" : ""}${displayedAdjustment}%)`,
               color:
-                sku.suggestedAdjustmentPct !== 0
-                  ? sku.suggestedAdjustmentPct > 0
+                displayedAdjustment !== 0
+                  ? displayedAdjustment > 0
                     ? "text-[var(--color-accent)]"
                     : "text-[var(--color-warning)]"
                   : "text-[var(--color-foreground-muted)]",

@@ -2,18 +2,27 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { TrendingUp, Grid3X3 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import KpiCards from "./KpiCards";
 import DemandChart from "./DemandChart";
 import RecommendationPanel from "./RecommendationPanel";
-import SegmentationMatrix from "./SegmentationMatrix";
 import { skus, getAggregateHistory } from "@/lib/mock-data";
 import type { SkuData } from "@/lib/mock-data";
 
 const aggregateData = getAggregateHistory();
 
+type SheetTab = "spiking-declining" | "segmentation";
+
+const sheetTabs: { id: SheetTab; label: string; icon: React.ElementType }[] = [
+  { id: "spiking-declining", label: "Spiking/Declining SKU", icon: TrendingUp },
+  { id: "segmentation", label: "SKU Segmentation & Forecast Strategy", icon: Grid3X3 },
+];
+
 export default function DemandPlanningPage() {
   const [selectedSku, setSelectedSku] = useState<SkuData | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [activeSheet, setActiveSheet] = useState<SheetTab>("spiking-declining");
 
   const handleSelectSku = (sku: SkuData) => {
     setSelectedSku((prev) => (prev?.id === sku.id ? null : sku));
@@ -59,37 +68,83 @@ export default function DemandPlanningPage() {
           </div>
         </div>
 
-        {/* KPI cards */}
-        <KpiCards selectedSku={selectedSku} allSkus={skus} />
-
-        {/* Main layout: SKU list (left) + Graph & AI recommendation (right) */}
-        <div className="grid grid-cols-[280px_1fr] gap-4">
-          {/* Left: SKU list */}
-          <RecommendationPanel
-            selectedSku={selectedSku}
-            allSkus={skus}
-            onSelectSku={handleSelectSku}
-            view="sku-list"
-          />
-          
-          {/* Right: Graph on top, AI recommendation below */}
-          <div className="flex flex-col gap-4">
-            <DemandChart selectedSku={selectedSku} aggregateData={aggregateData} />
-            <RecommendationPanel
-              selectedSku={selectedSku}
-              allSkus={skus}
-              onSelectSku={handleSelectSku}
-              view="details"
-            />
-          </div>
+        {/* Sheet tabs - prominent style */}
+        <div className="flex items-center gap-2">
+          {sheetTabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeSheet === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveSheet(tab.id)}
+                className={cn(
+                  "flex items-center gap-2.5 px-5 py-3 text-sm font-semibold rounded-xl transition-all",
+                  isActive
+                    ? "bg-[var(--color-primary)] text-white shadow-lg shadow-[var(--color-primary)]/25"
+                    : "bg-[var(--color-surface)] text-[var(--color-foreground-muted)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+                )}
+              >
+                <Icon size={16} />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
         </div>
 
-        {/* Segmentation matrix */}
-        <SegmentationMatrix
-          skus={skus}
-          selectedSku={selectedSku}
-          onSelectSku={handleSelectSku}
-        />
+        {/* Sheet 1: Spiking/Declining SKU */}
+        {activeSheet === "spiking-declining" && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+            className="space-y-5"
+          >
+            {/* KPI cards - only on Sheet 1 */}
+            <KpiCards selectedSku={selectedSku} allSkus={skus} />
+
+            {/* Main layout: SKU list (left) + Graph & AI recommendation (right) */}
+            <div className="grid grid-cols-[280px_1fr] gap-4">
+              {/* Left: SKU list */}
+              <RecommendationPanel
+                selectedSku={selectedSku}
+                allSkus={skus}
+                onSelectSku={handleSelectSku}
+                view="sku-list"
+              />
+              
+              {/* Right: Graph on top, AI recommendation below */}
+              <div className="flex flex-col gap-4">
+                <DemandChart selectedSku={selectedSku} aggregateData={aggregateData} />
+                <RecommendationPanel
+                  selectedSku={selectedSku}
+                  allSkus={skus}
+                  onSelectSku={handleSelectSku}
+                  view="details"
+                />
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Sheet 2: SKU Segmentation & Forecast Strategy */}
+        {activeSheet === "segmentation" && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+            className="flex flex-col items-center justify-center py-20"
+          >
+            <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-12 text-center max-w-md">
+              <Grid3X3 size={48} className="mx-auto text-[var(--color-foreground-muted)] mb-4" />
+              <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-2">
+                SKU Segmentation & Forecast Strategy
+              </h3>
+              <p className="text-sm text-[var(--color-foreground-muted)]">
+                Metrics and visualizations for this sheet will be configured soon.
+              </p>
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
   );

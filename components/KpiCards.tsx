@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, TrendingUp, Lightbulb, Activity, Zap, BarChart2 } from "lucide-react";
+import { AlertTriangle, TrendingUp, Lightbulb, Activity, BarChart2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SkuData } from "@/lib/mock-data";
 
@@ -23,7 +23,7 @@ export default function KpiCards({ selectedSku, allSkus }: KpiCardsProps) {
       icon: AlertTriangle,
       label: "Demand Spike Detected",
       value: spikeDetected ? "Active" : "None",
-      sub: "Last 24–48 hours",
+      sub: "Last 2 Days",
       accent: spikeDetected ? "danger" : "success",
       iconColor: spikeDetected ? "text-[var(--color-danger)]" : "text-[var(--color-success)]",
       bgColor: spikeDetected ? "bg-[var(--color-danger-light)]" : "bg-[var(--color-success-light)]",
@@ -58,15 +58,6 @@ export default function KpiCards({ selectedSku, allSkus }: KpiCardsProps) {
       bgColor: "bg-[var(--color-success-light)]",
     },
     {
-      icon: Zap,
-      label: "Time to Detect",
-      value: "38 min",
-      sub: "From first anomaly signal",
-      accent: "info",
-      iconColor: "text-[var(--color-accent)]",
-      bgColor: "bg-[var(--color-accent-light)]",
-    },
-    {
       icon: BarChart2,
       label: "Forecast Bias",
       value: `${topDeviation > 0 ? "+" : ""}${topDeviation.toFixed(1)}%`,
@@ -78,7 +69,7 @@ export default function KpiCards({ selectedSku, allSkus }: KpiCardsProps) {
   ];
 
   return (
-    <div className="grid grid-cols-6 gap-3">
+    <div className="grid grid-cols-5 gap-3">
       {cards.map((card) => {
         const Icon = card.icon;
         return (
