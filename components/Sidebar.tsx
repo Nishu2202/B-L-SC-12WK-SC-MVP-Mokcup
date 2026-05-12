@@ -88,12 +88,7 @@ export default function Sidebar({ activeView, onNavigate }: SidebarProps) {
                   />
                   <span className="text-xs font-medium leading-tight min-w-0">{item.label}</span>
                   {isActive && (
-                    <div className="flex items-center gap-1.5 ml-auto flex-shrink-0">
-                      <div className="px-2 py-0.5 rounded-full bg-[var(--color-primary)] bg-opacity-20">
-                        <span className="text-[9px] font-semibold text-[var(--color-primary)] whitespace-nowrap">ACTIVE</span>
-                      </div>
-                      <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]" />
-                    </div>
+                    <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] ml-auto flex-shrink-0" />
                   )}
                 </button>
               </li>
