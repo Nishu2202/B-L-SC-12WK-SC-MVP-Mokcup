@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { ElementType } from "react";
 import { cn } from "@/lib/utils";
 import type { SkuData, ForecastEngine } from "@/lib/mock-data";
 import { ChevronRight, CheckCircle2, AlertCircle, Info, XCircle } from "lucide-react";
@@ -38,7 +39,7 @@ const engineConfig: Record<ForecastEngine, { color: string; bg: string; dot: str
   },
 };
 
-const engineIcon: Record<ForecastEngine, React.ElementType> = {
+const engineIcon: Record<ForecastEngine, ElementType> = {
   "Blue Yonder": CheckCircle2,
   OPAL: Info,
   "Blue Yonder + Planner": AlertCircle,

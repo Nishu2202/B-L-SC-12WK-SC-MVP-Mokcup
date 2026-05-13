@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import type { ElementType } from "react";
 import { Brain, TrendingUp, TrendingDown, Minus, RefreshCw, ChevronRight, AlertTriangle, CheckCircle, Info, ChevronDown, ArrowUpCircle, ArrowDownCircle, PauseCircle, X, Edit3, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import StatusChip from "./StatusChip";
@@ -55,7 +56,7 @@ const filterOptions: { value: FilterOption; label: string }[] = [
   { value: "hold", label: "Hold & Monitor" },
 ];
 
-const actionIcon: Record<string, React.ElementType> = {
+const actionIcon: Record<string, ElementType> = {
   increase: TrendingUp,
   decrease: TrendingDown,
   hold: Minus,

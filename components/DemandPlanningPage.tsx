@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { ElementType } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TrendingUp, Grid3X3 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,7 +15,7 @@ const aggregateData = getAggregateHistory();
 
 type SheetTab = "spiking-declining" | "segmentation";
 
-const sheetTabs: { id: SheetTab; label: string; icon: React.ElementType }[] = [
+const sheetTabs: { id: SheetTab; label: string; icon: ElementType }[] = [
   { id: "spiking-declining", label: "Spiking/Declining SKU", icon: TrendingUp },
   { id: "segmentation", label: "SKU Segmentation & Forecast Strategy", icon: Grid3X3 },
 ];

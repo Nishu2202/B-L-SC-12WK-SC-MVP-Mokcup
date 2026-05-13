@@ -1,5 +1,6 @@
 "use client";
 
+import type { ElementType } from "react";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -23,7 +24,7 @@ export type NavView =
 interface NavItem {
   id: NavView;
   label: string;
-  icon: React.ElementType;
+  icon: ElementType;
   active?: boolean;
 }
 

@@ -7,7 +7,6 @@ import Header from "@/components/Header";
 import DemandPlanningPage from "@/components/DemandPlanningPage";
 import PlaceholderPage from "@/components/PlaceholderPage";
 import CopilotDrawer from "@/components/CopilotDrawer";
-import { skus } from "@/lib/mock-data";
 import type { SkuData } from "@/lib/mock-data";
 
 const pageConfig: Record<NavView, { title: string; subtitle?: string }> = {

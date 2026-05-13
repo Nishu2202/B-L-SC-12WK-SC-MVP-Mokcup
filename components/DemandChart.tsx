@@ -3,18 +3,14 @@
 import { useState } from "react";
 import {
   ResponsiveContainer,
-  LineChart,
   Line,
   Area,
-  AreaChart,
   ComposedChart,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  ReferenceLine,
   ReferenceArea,
-  Legend,
 } from "recharts";
 import { cn } from "@/lib/utils";
 import type { SkuData, DailyDataPoint } from "@/lib/mock-data";
