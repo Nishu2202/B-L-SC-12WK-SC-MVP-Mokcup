@@ -25,7 +25,6 @@ import {
   ChevronUp,
   ChevronDown,
   Sparkles,
-  Info,
   FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -581,25 +580,6 @@ export default function SkuSegmentationTab({ skus }: SkuSegmentationTabProps) {
           </span>
         </div>
 
-        {/* Engine legend */}
-        <div className="px-5 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface-2)] flex flex-wrap gap-x-5 gap-y-2">
-          {(Object.entries(engineBadge) as [ForecastEngine, typeof engineBadge[ForecastEngine]][]).map(([, eng]) => (
-            <div key={eng.label} className="flex items-start gap-2 max-w-[280px]">
-              <span
-                className={cn(
-                  "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap flex-shrink-0 mt-0.5",
-                  eng.bg,
-                  eng.text
-                )}
-              >
-                <Info size={9} />
-                {eng.label}
-              </span>
-              <p className="text-[10px] text-[var(--color-foreground-muted)] leading-relaxed">{eng.description}</p>
-            </div>
-          ))}
-        </div>
-
         {/* Cards grid */}
         <div className="p-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {recSkus.map((sku) => {
@@ -611,8 +591,6 @@ export default function SkuSegmentationTab({ skus }: SkuSegmentationTabProps) {
             const isIncrease = adjPct > 0;
             const isDecrease = adjPct < 0;
             const isNeutral = adjPct === 0;
-            const eng = engineBadge[sku.forecastEngine];
-
             const deltaColor = isIncrease
               ? "text-[var(--color-success)]"
               : isDecrease
@@ -628,30 +606,12 @@ export default function SkuSegmentationTab({ skus }: SkuSegmentationTabProps) {
               >
                 {/* Card header */}
                 <div className="px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold text-[var(--color-foreground)] truncate leading-tight">
-                        {sku.name}
-                      </p>
-                      <p className="text-[10px] text-[var(--color-foreground-muted)] mt-0.5">{sku.code}</p>
-                    </div>
-                    {/* Engine badge */}
-                    <span
-                      className={cn(
-                        "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap flex-shrink-0",
-                        eng.bg,
-                        eng.text
-                      )}
-                    >
-                      <Info size={9} />
-                      {eng.label}
-                    </span>
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-[var(--color-foreground)] truncate leading-tight">
+                      {sku.name}
+                    </p>
+                    <p className="text-[10px] text-[var(--color-foreground-muted)] mt-0.5">{sku.code}</p>
                   </div>
-                  {/* Engine description */}
-                  <p className="text-[10px] text-[var(--color-foreground-muted)] leading-relaxed">
-                    <span className="font-semibold text-[var(--color-foreground-muted)]">Forecast engine: </span>
-                    {eng.description}
-                  </p>
                 </div>
 
                 {/* Metrics */}
