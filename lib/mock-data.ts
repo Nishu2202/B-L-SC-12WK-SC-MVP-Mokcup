@@ -31,6 +31,9 @@ export interface SkuData {
   confidenceScore: number;
   explanation: string;
   history: DailyDataPoint[];
+  revenuePerUnit: number;
+  ebitdaMarginPct: number;
+  topCustomers: string[];
 }
 
 // Generate 30-day history with deterministic seeded random for consistency
@@ -99,6 +102,9 @@ export const skus: SkuData[] = [
     explanation:
       "Daily orders exceeded the expected consumption profile by 24% in the last 2 Days, driven by a surge in US East region. The spike distribution is front-loaded, suggesting a pull-forward from May. Recommend increasing current-month forecast by 8% and monitoring daily fill rate.",
     history: genHistory(4800, 600, [2, 1, 0], 1.35, 15, 101),
+    revenuePerUnit: 28.5,
+    ebitdaMarginPct: 34,
+    topCustomers: ["Walmart US", "CVS Pharmacy", "Walgreens"],
   },
   {
     id: "sku-006",
@@ -121,6 +127,9 @@ export const skus: SkuData[] = [
     explanation:
       "Premium specialty segment performing stably with high forecast accuracy. Orders tracking within expected range. Maintain current forecast and supply strategy.",
     history: genHistory(1480, 300, [], 1.0, 0, 606),
+    revenuePerUnit: 42.0,
+    ebitdaMarginPct: 41,
+    topCustomers: ["1-800 Contacts", "LensCrafters", "Target Optical"],
   },
   {
     id: "sku-003",
@@ -143,6 +152,9 @@ export const skus: SkuData[] = [
     explanation:
       "Orders tracking precisely to expected profile. Excellent forecast accuracy with minimal variance. No action required — continue current forecast and replenishment strategy.",
     history: genHistory(2280, 250, [], 1.0, 4, 303),
+    revenuePerUnit: 22.0,
+    ebitdaMarginPct: 29,
+    topCustomers: ["Sam's Club", "Costco", "Amazon"],
   },
   {
     id: "sku-004",
@@ -165,6 +177,9 @@ export const skus: SkuData[] = [
     explanation:
       "Toric orders rising ahead of seasonal promotion ramp. Historical accuracy suggests pull-forward activity. Increase forecast by 5% and monitor promotional impact.",
     history: genHistory(3850, 400, [2, 1, 0], 1.25, 8, 404),
+    revenuePerUnit: 31.0,
+    ebitdaMarginPct: 36,
+    topCustomers: ["Walmart US", "Pearle Vision", "America's Best"],
   },
   {
     id: "sku-005",
@@ -187,6 +202,9 @@ export const skus: SkuData[] = [
     explanation:
       "Orders declining as expected in legacy daily segment. Market shift to Biotrue continues. Decrease forecast by 12% to align with structural decline and reduce excess inventory.",
     history: genHistory(950, 400, [], 1.0, -25, 505),
+    revenuePerUnit: 19.5,
+    ebitdaMarginPct: 22,
+    topCustomers: ["Rite Aid", "Target", "Walgreens"],
   },
   {
     id: "sku-002",
@@ -209,6 +227,9 @@ export const skus: SkuData[] = [
     explanation:
       "Orders tracking slightly below expected profile, but within normal variance bands. No anomalies detected. Maintain current forecast and continue standard monitoring.",
     history: genHistory(3400, 700, [], 1.0, -12, 202),
+    revenuePerUnit: 26.0,
+    ebitdaMarginPct: 31,
+    topCustomers: ["GlassesUSA", "Clearly", "National Vision"],
   },
   {
     id: "sku-007",
@@ -230,6 +251,9 @@ export const skus: SkuData[] = [
     confidenceScore: 81,
     explanation: "B+L ULTRA orders rising ahead of summer promotion window. Increase forecast by 6% to cover anticipated uplift and protect service levels.",
     history: genHistory(3300, 500, [2, 1, 0], 1.22, 10, 707),
+    revenuePerUnit: 33.5,
+    ebitdaMarginPct: 38,
+    topCustomers: ["Walmart US", "Costco", "CVS Pharmacy"],
   },
   {
     id: "sku-008",
@@ -251,6 +275,9 @@ export const skus: SkuData[] = [
     confidenceScore: 52,
     explanation: "ReNu MultiPlus is experiencing structural demand erosion in LATAM. Weekly distribution rebalance required alongside a -15% forecast reduction.",
     history: genHistory(730, 800, [], 1.0, -35, 808),
+    revenuePerUnit: 14.0,
+    ebitdaMarginPct: 18,
+    topCustomers: ["Farmacia del Ahorro", "Drogasil", "Cruz Verde"],
   },
   {
     id: "sku-009",
@@ -272,6 +299,9 @@ export const skus: SkuData[] = [
     confidenceScore: 63,
     explanation: "ULTRA Toric demand is running below expected but within a watchlist threshold. Hold for one more cycle before committing to a downward revision.",
     history: genHistory(2550, 700, [], 1.0, -8, 909),
+    revenuePerUnit: 35.0,
+    ebitdaMarginPct: 39,
+    topCustomers: ["Walmart US", "LensCrafters", "Visionworks"],
   },
   {
     id: "sku-010",
@@ -293,6 +323,9 @@ export const skus: SkuData[] = [
     confidenceScore: 92,
     explanation: "SofLens Toric orders in EMEA are trending slightly above expected, within acceptable bounds. Continue current forecast strategy.",
     history: genHistory(1810, 280, [], 1.0, 3, 1010),
+    revenuePerUnit: 24.0,
+    ebitdaMarginPct: 28,
+    topCustomers: ["Specsavers UK", "Vision Express", "Boots Opticians"],
   },
   {
     id: "sku-011",
@@ -314,6 +347,9 @@ export const skus: SkuData[] = [
     confidenceScore: 83,
     explanation: "Biotrue ONEday 30pk in APAC is significantly outperforming forecast. Increase by 10% immediately and expedite replenishment from Singapore DC.",
     history: genHistory(3960, 550, [2, 1, 0], 1.30, 18, 1111),
+    revenuePerUnit: 27.0,
+    ebitdaMarginPct: 33,
+    topCustomers: ["OWNDAYS Japan", "Paris Miki", "Aeon Wellness"],
   },
   {
     id: "sku-012",
@@ -335,6 +371,9 @@ export const skus: SkuData[] = [
     confidenceScore: 90,
     explanation: "ReNu Fresh 240mL continues structural decline driven by category shift. Reduce forecast by 14% and align safety stock to lower demand baseline.",
     history: genHistory(937, 350, [], 1.0, -28, 1212),
+    revenuePerUnit: 12.5,
+    ebitdaMarginPct: 16,
+    topCustomers: ["CVS Pharmacy", "Rite Aid", "Dollar General"],
   },
   {
     id: "sku-013",
@@ -356,6 +395,9 @@ export const skus: SkuData[] = [
     confidenceScore: 79,
     explanation: "ULTRA Multifocal 3-pk growing steadily within expected variance. No immediate action needed — hold and reassess at next cycle.",
     history: genHistory(1297, 420, [], 1.0, 5, 1313),
+    revenuePerUnit: 38.5,
+    ebitdaMarginPct: 43,
+    topCustomers: ["LensCrafters", "MyEyeDr", "Walmart Vision"],
   },
   {
     id: "sku-014",
@@ -377,6 +419,9 @@ export const skus: SkuData[] = [
     confidenceScore: 57,
     explanation: "Lacelle Circle demand in Asia Pacific remains highly unpredictable. Reduce forecast by 18% and consider switching to a reactive replenishment model.",
     history: genHistory(1053, 850, [], 1.0, -20, 1414),
+    revenuePerUnit: 29.0,
+    ebitdaMarginPct: 35,
+    topCustomers: ["Watsons Asia", "Guardian Pharmacy", "Lotte Mart"],
   },
   {
     id: "sku-015",
@@ -398,6 +443,9 @@ export const skus: SkuData[] = [
     confidenceScore: 95,
     explanation: "Optive Lubricant 10mL performing precisely to model expectations in EU. Maintain forecast and standard replenishment cadence.",
     history: genHistory(1490, 200, [], 1.0, 1, 1515),
+    revenuePerUnit: 17.0,
+    ebitdaMarginPct: 25,
+    topCustomers: ["Boots UK", "Kruidvat", "DM Drogerie"],
   },
   {
     id: "sku-016",
@@ -419,6 +467,9 @@ export const skus: SkuData[] = [
     confidenceScore: 88,
     explanation: "SofLens Daily Disposable 30pk tracking above forecast but within the upper confidence band. Hold forecast through the next review cycle.",
     history: genHistory(3413, 380, [], 1.0, 2, 1616),
+    revenuePerUnit: 23.5,
+    ebitdaMarginPct: 28,
+    topCustomers: ["Specsavers EU", "Fielmann", "Synoptik"],
   },
   {
     id: "sku-017",
@@ -440,6 +491,9 @@ export const skus: SkuData[] = [
     confidenceScore: 76,
     explanation: "Biotrue Multi-Purpose solution facing category headwinds as customers switch to daily lenses. Reduce forecast by 10% and adjust safety stock targets.",
     history: genHistory(2040, 600, [], 1.0, -15, 1717),
+    revenuePerUnit: 21.0,
+    ebitdaMarginPct: 26,
+    topCustomers: ["Walmart US", "Target", "Kroger Pharmacy"],
   },
   {
     id: "sku-018",
@@ -461,6 +515,9 @@ export const skus: SkuData[] = [
     confidenceScore: 78,
     explanation: "ULTRA 6-pk APAC volume is outperforming due to new market penetration. Increase forecast by 7% and review DC capacity in Singapore.",
     history: genHistory(2910, 520, [2, 1, 0], 1.18, 12, 1818),
+    revenuePerUnit: 33.0,
+    ebitdaMarginPct: 37,
+    topCustomers: ["OWNDAYS", "Owndays Singapore", "Optical 88"],
   },
   {
     id: "sku-019",
@@ -482,6 +539,9 @@ export const skus: SkuData[] = [
     confidenceScore: 59,
     explanation: "Lacelle 1-Day demand in Asia is volatile. Model confidence is low — hold forecast and engage regional planner before making any adjustments.",
     history: genHistory(613, 700, [], 1.0, -5, 1919),
+    revenuePerUnit: 32.0,
+    ebitdaMarginPct: 38,
+    topCustomers: ["Watsons HK", "Sa Sa Cosmetics", "Mannings"],
   },
   {
     id: "sku-020",
@@ -503,6 +563,9 @@ export const skus: SkuData[] = [
     confidenceScore: 82,
     explanation: "ReNu Advanced relaunched in EU markets is driving orders above plan. Increase forecast by 8% and align with regional trade marketing calendar.",
     history: genHistory(2250, 420, [2, 1, 0], 1.15, 9, 2020),
+    revenuePerUnit: 20.5,
+    ebitdaMarginPct: 27,
+    topCustomers: ["DM Drogerie", "Rossmann", "Müller"],
   },
 ];
 

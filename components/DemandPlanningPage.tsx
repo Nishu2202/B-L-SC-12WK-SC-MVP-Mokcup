@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import KpiCards from "./KpiCards";
 import DemandChart from "./DemandChart";
 import RecommendationPanel from "./RecommendationPanel";
+import SkuSegmentationTab from "./SkuSegmentationTab";
 import { skus, getAggregateHistory } from "@/lib/mock-data";
 import type { SkuData } from "@/lib/mock-data";
 
@@ -133,17 +134,8 @@ export default function DemandPlanningPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2 }}
-            className="flex flex-col items-center justify-center py-20"
           >
-            <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-12 text-center max-w-md">
-              <Grid3X3 size={48} className="mx-auto text-[var(--color-foreground-muted)] mb-4" />
-              <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-2">
-                SKU Segmentation & Forecast Strategy
-              </h3>
-              <p className="text-sm text-[var(--color-foreground-muted)]">
-                Metrics and visualizations for this sheet will be configured soon.
-              </p>
-            </div>
+            <SkuSegmentationTab skus={skus} />
           </motion.div>
         )}
       </div>
