@@ -25,6 +25,8 @@ import {
   ChevronUp,
   ChevronDown,
   Sparkles,
+  Info,
+  FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SkuData, ForecastEngine } from "@/lib/mock-data";
@@ -59,12 +61,32 @@ const actionColors: Record<
 
 const engineBadge: Record<
   ForecastEngine,
-  { bg: string; text: string; label: string }
+  { bg: string; text: string; label: string; description: string }
 > = {
-  "Blue Yonder": { bg: "bg-green-50 border-green-200", text: "text-green-700", label: "Blue Yonder" },
-  OPAL: { bg: "bg-blue-50 border-blue-200", text: "text-blue-700", label: "OPAL" },
-  "Blue Yonder + Planner": { bg: "bg-amber-50 border-amber-200", text: "text-amber-700", label: "BY + Planner" },
-  "OPAL + Planner": { bg: "bg-red-50 border-red-200", text: "text-red-700", label: "OPAL + Planner" },
+  "Blue Yonder": {
+    bg: "bg-green-50 border-green-200",
+    text: "text-green-700",
+    label: "Blue Yonder (Automated)",
+    description: "BY ML model alone — high confidence, no planner review needed.",
+  },
+  OPAL: {
+    bg: "bg-blue-50 border-blue-200",
+    text: "text-blue-700",
+    label: "OPAL (Automated)",
+    description: "B+L's demand-sensing layer — used when BY signal is insufficient. No planner override needed.",
+  },
+  "Blue Yonder + Planner": {
+    bg: "bg-amber-50 border-amber-200",
+    text: "text-amber-700",
+    label: "BY + Planner Review",
+    description: "BY forecast detected an out-of-band signal. A planner must manually validate before the number is locked.",
+  },
+  "OPAL + Planner": {
+    bg: "bg-red-50 border-red-200",
+    text: "text-red-700",
+    label: "OPAL + Planner Review",
+    description: "Lowest model confidence. OPAL signal plus mandatory expert planner override required — highest urgency.",
+  },
 };
 
 // ─── Custom quadrant revenue label ───────────────────────────────────────────
@@ -559,6 +581,25 @@ export default function SkuSegmentationTab({ skus }: SkuSegmentationTabProps) {
           </span>
         </div>
 
+        {/* Engine legend */}
+        <div className="px-5 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface-2)] flex flex-wrap gap-x-5 gap-y-2">
+          {(Object.entries(engineBadge) as [ForecastEngine, typeof engineBadge[ForecastEngine]][]).map(([, eng]) => (
+            <div key={eng.label} className="flex items-start gap-2 max-w-[280px]">
+              <span
+                className={cn(
+                  "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap flex-shrink-0 mt-0.5",
+                  eng.bg,
+                  eng.text
+                )}
+              >
+                <Info size={9} />
+                {eng.label}
+              </span>
+              <p className="text-[10px] text-[var(--color-foreground-muted)] leading-relaxed">{eng.description}</p>
+            </div>
+          ))}
+        </div>
+
         {/* Cards grid */}
         <div className="p-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {recSkus.map((sku) => {
@@ -586,23 +627,31 @@ export default function SkuSegmentationTab({ skus }: SkuSegmentationTabProps) {
                 className="border border-[var(--color-border)] rounded-xl overflow-hidden bg-[var(--color-surface)]"
               >
                 {/* Card header */}
-                <div className="px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface-2)] flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold text-[var(--color-foreground)] truncate leading-tight">
-                      {sku.name}
-                    </p>
-                    <p className="text-[10px] text-[var(--color-foreground-muted)] mt-0.5">{sku.code}</p>
+                <div className="px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-[var(--color-foreground)] truncate leading-tight">
+                        {sku.name}
+                      </p>
+                      <p className="text-[10px] text-[var(--color-foreground-muted)] mt-0.5">{sku.code}</p>
+                    </div>
+                    {/* Engine badge */}
+                    <span
+                      className={cn(
+                        "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap flex-shrink-0",
+                        eng.bg,
+                        eng.text
+                      )}
+                    >
+                      <Info size={9} />
+                      {eng.label}
+                    </span>
                   </div>
-                  {/* Engine badge */}
-                  <span
-                    className={cn(
-                      "inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap flex-shrink-0",
-                      eng.bg,
-                      eng.text
-                    )}
-                  >
-                    {eng.label}
-                  </span>
+                  {/* Engine description */}
+                  <p className="text-[10px] text-[var(--color-foreground-muted)] leading-relaxed">
+                    <span className="font-semibold text-[var(--color-foreground-muted)]">Forecast engine: </span>
+                    {eng.description}
+                  </p>
                 </div>
 
                 {/* Metrics */}
@@ -714,9 +763,15 @@ export default function SkuSegmentationTab({ skus }: SkuSegmentationTabProps) {
                     </div>
                   </div>
 
-                  {/* Rationale */}
-                  <div className="bg-[var(--color-surface-2)] rounded-lg px-3 py-2.5 text-[10px] text-[var(--color-foreground-muted)] leading-relaxed italic">
-                    &ldquo;{sku.rationale}&rdquo;
+                  {/* Reason for adjustment */}
+                  <div className="bg-[var(--color-surface-2)] rounded-lg px-3 py-2.5">
+                    <div className="flex items-center gap-1.5 text-[11px] text-[var(--color-foreground-muted)] mb-1.5">
+                      <FileText size={11} className="text-slate-400 flex-shrink-0" />
+                      <span className="font-semibold">Reason for adjustment</span>
+                    </div>
+                    <p className="text-[10px] text-[var(--color-foreground-muted)] leading-relaxed">
+                      {sku.rationale}
+                    </p>
                   </div>
                 </div>
               </div>
