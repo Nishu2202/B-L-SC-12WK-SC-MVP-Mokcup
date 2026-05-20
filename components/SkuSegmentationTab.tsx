@@ -67,6 +67,65 @@ const engineBadge: Record<
   "OPAL + Planner": { bg: "bg-red-50 border-red-200", text: "text-red-700", label: "OPAL + Planner" },
 };
 
+// ─── Custom quadrant revenue label ───────────────────────────────────────────
+
+interface QuadrantLabelProps {
+  viewBox?: { x: number; y: number; width: number; height: number };
+  title: string;
+  revenue: string;
+  isHighRisk?: boolean;
+}
+
+function QuadrantRevenueLabel({ viewBox, title, revenue, isHighRisk }: QuadrantLabelProps) {
+  if (!viewBox) return null;
+  const { x, y, width } = viewBox;
+  const PAD = 8;
+  // Anchor to top-right corner of the quadrant area
+  return (
+    <g>
+      <foreignObject
+        x={x + width - 130 - PAD}
+        y={y + PAD}
+        width={130}
+        height={42}
+        style={{ overflow: "visible" }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
+            gap: 2,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 9,
+              fontWeight: 600,
+              color: isHighRisk ? "var(--color-danger)" : "var(--color-foreground-muted)",
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+              lineHeight: 1,
+            }}
+          >
+            {title}
+          </span>
+          <span
+            style={{
+              fontSize: 13,
+              fontWeight: 800,
+              color: isHighRisk ? "var(--color-danger)" : "var(--color-foreground)",
+              lineHeight: 1,
+            }}
+          >
+            {revenue}
+          </span>
+        </div>
+      </foreignObject>
+    </g>
+  );
+}
+
 // ─── Custom scatter tooltip ───────────────────────────────────────────────────
 
 function ScatterTooltip({
@@ -149,6 +208,21 @@ export default function SkuSegmentationTab({ skus }: SkuSegmentationTabProps) {
     [skusWithQuadrant]
   );
 
+  // Quadrant revenue totals
+  const quadrantRevenue = useMemo(() => {
+    let hvhv = 0, hvlv = 0, lvhv = 0, lvlv = 0;
+    for (const s of skusWithQuadrant) {
+      const rev = s.volume * s.revenuePerUnit;
+      const isHighVol = s.volume > medianVolume;
+      const isHighVar = s.variabilityScore > variabilityThreshold;
+      if (isHighVol && isHighVar) hvhv += rev;
+      else if (isHighVol && !isHighVar) hvlv += rev;
+      else if (!isHighVol && isHighVar) lvhv += rev;
+      else lvlv += rev;
+    }
+    return { hvhv, hvlv, lvhv, lvlv };
+  }, [skusWithQuadrant, medianVolume]);
+
   // X-axis domain padding
   const maxVol = Math.max(...skus.map((s) => s.volume));
   const xMax = Math.ceil(maxVol * 1.08);
@@ -186,15 +260,73 @@ export default function SkuSegmentationTab({ skus }: SkuSegmentationTabProps) {
               <ScatterChart margin={{ top: 10, right: 20, bottom: 30, left: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
 
-                {/* High-risk quadrant background */}
+                {/* Q1: High Volume, High Variability — highlighted danger zone */}
                 <ReferenceArea
                   x1={medianVolume}
                   x2={xMax}
                   y1={variabilityThreshold}
                   y2={1}
                   fill="var(--color-danger)"
-                  fillOpacity={0.06}
+                  fillOpacity={0.07}
                   strokeOpacity={0}
+                  label={
+                    <QuadrantRevenueLabel
+                      title="HV · HVar"
+                      revenue={fmtRevenue(quadrantRevenue.hvhv)}
+                      isHighRisk
+                    />
+                  }
+                />
+
+                {/* Q2: High Volume, Low Variability */}
+                <ReferenceArea
+                  x1={medianVolume}
+                  x2={xMax}
+                  y1={0}
+                  y2={variabilityThreshold}
+                  fill="var(--color-success)"
+                  fillOpacity={0.04}
+                  strokeOpacity={0}
+                  label={
+                    <QuadrantRevenueLabel
+                      title="HV · LVar"
+                      revenue={fmtRevenue(quadrantRevenue.hvlv)}
+                    />
+                  }
+                />
+
+                {/* Q3: Low Volume, High Variability */}
+                <ReferenceArea
+                  x1={0}
+                  x2={medianVolume}
+                  y1={variabilityThreshold}
+                  y2={1}
+                  fill="var(--color-warning)"
+                  fillOpacity={0.04}
+                  strokeOpacity={0}
+                  label={
+                    <QuadrantRevenueLabel
+                      title="LV · HVar"
+                      revenue={fmtRevenue(quadrantRevenue.lvhv)}
+                    />
+                  }
+                />
+
+                {/* Q4: Low Volume, Low Variability */}
+                <ReferenceArea
+                  x1={0}
+                  x2={medianVolume}
+                  y1={0}
+                  y2={variabilityThreshold}
+                  fill="var(--color-foreground-muted)"
+                  fillOpacity={0.03}
+                  strokeOpacity={0}
+                  label={
+                    <QuadrantRevenueLabel
+                      title="LV · LVar"
+                      revenue={fmtRevenue(quadrantRevenue.lvlv)}
+                    />
+                  }
                 />
 
                 {/* Threshold lines */}
